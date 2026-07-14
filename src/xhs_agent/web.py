@@ -24,19 +24,40 @@ from typing import Any, Dict, Optional
 # ---------------------------------------------------------------------------
 # 路径 / 工作目录修正
 # 保证无论从哪里启动，都能找到 xhs_agent 包，且 ./runs 解析到 /workspace/runs。
+# Vercel 环境：文件系统只读，需把 config/ 和 runs/ 复制到 /tmp 可写目录。
 # ---------------------------------------------------------------------------
+import shutil as _shutil
+
 _ROOT = Path(__file__).resolve().parents[2]  # /workspace
 _SRC = _ROOT / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
-# Controller / ArtifactStore / DecisionLogger 都用相对路径 ./runs，
-# 必须把 cwd 切到项目根，否则会写到错误目录。
-try:
-    os.chdir(_ROOT)
-except Exception:
-    pass
 
-RUNS_DIR = _ROOT / "runs"  # 绝对路径，用于 API 直接读文件
+_IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("VERCEL_ENV"))
+
+if _IS_VERCEL:
+    # Vercel Serverless 文件系统只读，只有 /tmp 可写。
+    # 冷启动时把 config/ 和 runs/ 复制到 /tmp，后续 Controller 写入落到可写目录。
+    _WORKSPACE = Path("/tmp/xhs_ws")
+    _WORKSPACE.mkdir(parents=True, exist_ok=True)
+    for _sub in ("config", "runs"):
+        _src_dir = _ROOT / _sub
+        _dst_dir = _WORKSPACE / _sub
+        if _src_dir.exists():
+            try:
+                _shutil.copytree(_src_dir, _dst_dir, dirs_exist_ok=True)
+            except Exception:
+                pass
+    os.chdir(_WORKSPACE)
+    RUNS_DIR = _WORKSPACE / "runs"
+else:
+    # 本地：Controller / ArtifactStore / DecisionLogger 用相对路径 ./runs，
+    # 必须把 cwd 切到项目根，否则会写到错误目录。
+    try:
+        os.chdir(_ROOT)
+    except Exception:
+        pass
+    RUNS_DIR = _ROOT / "runs"
 
 # 复用现有实现（不修改 cli.py / agents / schemas / tools）
 try:
