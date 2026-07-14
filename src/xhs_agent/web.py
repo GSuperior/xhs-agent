@@ -101,6 +101,16 @@ from pydantic import BaseModel
 
 _WEB_STATUS: Dict[str, Dict[str, Any]] = {}
 
+# 线程停止信号：run_id -> threading.Event
+# 后台任务在每个关键步骤前检查，收到停止信号则主动中止。
+_STOP_EVENTS: Dict[str, threading.Event] = {}
+
+
+def _stop_requested(run_id: str) -> bool:
+    """供 WebAgent 在关键步骤间检查是否收到停止信号。"""
+    ev = _STOP_EVENTS.get(run_id)
+    return ev is not None and ev.is_set()
+
 
 def _state_path(run_id: str) -> Path:
     return RUNS_DIR / run_id / "state.json"
@@ -173,14 +183,22 @@ class WebAgent(XHSAgent):
             json.dumps(state_info, ensure_ascii=False, indent=2), encoding="utf-8"
         )
 
+    def _check_stop(self, run_id: str) -> None:
+        """在每个阶段切换前检查停止信号，收到则抛 RuntimeError 中止。"""
+        if _stop_requested(run_id):
+            raise RuntimeError("__STOPPED__")
+
     # ---- daily：选题发现，停在 TOPIC_ANGLE_CONFIRMATION ----
     def run_daily(self, run_id: str) -> None:
         self._restore_controller(run_id)
+        self._check_stop(run_id)
         # DISCOVERING
         if self.controller.state != RunState.DISCOVERING:
             self.controller.transition(RunState.DISCOVERING)
         self._save_state(run_id)
+        self._check_stop(run_id)
         candidates_result = self.topic_agent.execute(run_id, topic="")
+        self._check_stop(run_id)
         # 进入 TOPIC_ANGLE_CONFIRMATION
         self.controller.transition(RunState.TOPIC_ANGLE_CONFIRMATION)
         self._save_state(run_id)
@@ -199,15 +217,19 @@ class WebAgent(XHSAgent):
         self, run_id: str, topic_brief: TopicBrief, source_urls: list
     ) -> None:
         # === RESEARCHING ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.RESEARCHING)
         self._save_state(run_id)
+        self._check_stop(run_id)
         evidence_pack = self.research_agent.execute(
             run_id, topic_brief, source_urls=source_urls
         )
 
         # === EVIDENCE_REVIEW ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.EVIDENCE_REVIEW)
         self._save_state(run_id)
+        self._check_stop(run_id)
         review_result = self._run_evidence_review(run_id, evidence_pack)
         if review_result is None:
             raise RuntimeError("证据审核返回空结果。")
@@ -219,6 +241,7 @@ class WebAgent(XHSAgent):
             if review_result.status == ReviewStatus.REVISE and self.controller.can_research():
                 self.controller.research_count += 1
                 self._save_state(run_id)
+                self._check_stop(run_id)
                 evidence_pack = self.research_agent.execute(
                     run_id, topic_brief, source_urls=source_urls
                 )
@@ -233,11 +256,14 @@ class WebAgent(XHSAgent):
                 raise RuntimeError("证据审核需人工介入。")
 
         # === OUTLINING ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.OUTLINING)
         self._save_state(run_id)
+        self._check_stop(run_id)
         card_outline = self.planning_agent.execute(run_id, topic_brief, evidence_pack)
 
         # === OUTLINE_CONFIRMATION（停，等用户确认）===
+        self._check_stop(run_id)
         self.controller.transition(RunState.OUTLINE_CONFIRMATION)
         self._save_state(run_id)
 
@@ -256,15 +282,19 @@ class WebAgent(XHSAgent):
         evidence_pack: EvidencePack, card_outline: CardOutline,
     ) -> None:
         # === DRAFTING ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.DRAFTING)
         self._save_state(run_id)
+        self._check_stop(run_id)
         draft = self.writing_agent.execute(
             run_id, card_outline, evidence_pack, topic_brief
         )
 
         # === CONTENT_REVIEW ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.CONTENT_REVIEW)
         self._save_state(run_id)
+        self._check_stop(run_id)
         review_result = self._run_content_review(
             run_id, card_outline, evidence_pack, draft
         )
@@ -278,6 +308,7 @@ class WebAgent(XHSAgent):
             if review_result.status == ReviewStatus.REVISE and self.controller.can_revise_copy():
                 self.controller.copy_revise_count += 1
                 self._save_state(run_id)
+                self._check_stop(run_id)
                 draft = self.writing_agent.execute(
                     run_id, card_outline, evidence_pack, topic_brief
                 )
@@ -294,8 +325,10 @@ class WebAgent(XHSAgent):
                 raise RuntimeError("内容审核需人工介入。")
 
         # === VISUAL_PLANNING ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.VISUAL_PLANNING)
         self._save_state(run_id)
+        self._check_stop(run_id)
         available_assets = AvailableAssets(available_assets=[])
         visual_plan = self.visual_agent.execute(
             run_id, card_outline, draft,
@@ -303,8 +336,10 @@ class WebAgent(XHSAgent):
         )
 
         # === LAYOUT_REVIEW ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.LAYOUT_REVIEW)
         self._save_state(run_id)
+        self._check_stop(run_id)
         review_result = self._run_layout_review(
             run_id, visual_plan.layout_spec, draft
         )
@@ -318,6 +353,7 @@ class WebAgent(XHSAgent):
             if review_result.status == ReviewStatus.REVISE and self.controller.can_revise_layout():
                 self.controller.layout_revise_count += 1
                 self._save_state(run_id)
+                self._check_stop(run_id)
                 visual_plan = self.visual_agent.execute(
                     run_id, card_outline, draft,
                     available_assets, self.config.design_token,
@@ -335,8 +371,10 @@ class WebAgent(XHSAgent):
                 raise RuntimeError("布局审核需人工介入。")
 
         # === RENDERING ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.RENDERING)
         self._save_state(run_id)
+        self._check_stop(run_id)
         html_content = self.renderer.render_html(
             visual_plan.layout_spec, draft,
             visual_plan.asset_manifest, self.config.design_token,
@@ -346,6 +384,7 @@ class WebAgent(XHSAgent):
         html_path.write_text(html_content, encoding="utf-8")
 
         # === RENDER_VALIDATION ===
+        self._check_stop(run_id)
         self.controller.transition(RunState.RENDER_VALIDATION)
         self._save_state(run_id)
         render_result = self.render_validator.validate_html(
@@ -354,6 +393,7 @@ class WebAgent(XHSAgent):
         # 渲染校验警告不阻断（与 CLI 一致）
 
         # === FINAL_CONFIRMATION（停，等用户确认终稿）===
+        self._check_stop(run_id)
         self.controller.transition(RunState.FINAL_CONFIRMATION)
         self._save_state(run_id)
 
@@ -439,12 +479,23 @@ class WebAgent(XHSAgent):
 # ===========================================================================
 
 def _launch(run_id: str, fn, *args) -> None:
+    # 注册停止信号（新任务开始时清掉旧的）
+    _STOP_EVENTS[run_id] = threading.Event()
+
     def _worker():
         try:
             _set_status(run_id, "running")
             fn(*args)
-            _clear_status(run_id)
+            # 如果是被停止的，标记为 stopped
+            if _stop_requested(run_id):
+                _set_status(run_id, "stopped", "用户主动停止")
+            else:
+                _clear_status(run_id)
         except Exception as e:  # noqa: BLE001
+            # 被停止时抛出的异常不算错误
+            if _stop_requested(run_id):
+                _set_status(run_id, "stopped", "用户主动停止")
+                return
             # 标记失败
             agent = WebAgent()
             try:
@@ -509,6 +560,18 @@ def index() -> HTMLResponse:
     if not html_path.exists():
         return HTMLResponse("<h1>index.html not found</h1>", status_code=500)
     return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+
+@app.get("/api/config")
+def get_config() -> JSONResponse:
+    """检测 API key 是否已配置（不返回 key 本身，只返回布尔状态）。"""
+    api_key = os.getenv("SENSENOVA_API_KEY", "").strip()
+    base_url = os.getenv("SENSENOVA_BASE_URL", "").strip()
+    return JSONResponse({
+        "has_api_key": bool(api_key),
+        "base_url_configured": bool(base_url),
+        "is_vercel": _IS_VERCEL,
+    })
 
 
 # ===========================================================================
@@ -809,6 +872,23 @@ def _bg_revise_outline(run_id: str, instruction: str) -> None:
 def _bg_revise_final(run_id: str, instruction: str) -> None:
     agent = WebAgent()
     agent.run_revise_final(run_id, instruction)
+
+
+@app.post("/api/runs/{run_id}/stop")
+def api_stop(run_id: str) -> JSONResponse:
+    """停止正在运行的后台任务。"""
+    _require_run(run_id)
+    if not _is_running(run_id):
+        raise HTTPException(status_code=400, detail="该 run 当前没有正在运行的任务。")
+    # 设置停止信号
+    ev = _STOP_EVENTS.get(run_id)
+    if ev is None:
+        _STOP_EVENTS[run_id] = threading.Event()
+        ev = _STOP_EVENTS[run_id]
+    ev.set()
+    # 立即把 web_status 标记为 stopping（最终会被 worker 改成 stopped）
+    _set_status(run_id, "stopping", "用户请求停止")
+    return JSONResponse({"run_id": run_id, "status": "stopping"})
 
 
 # ===========================================================================

@@ -205,9 +205,15 @@
     <button id="themeToggle" class="btn btn-ghost" title="切换主题">
       <span id="themeIcon">🌙</span>
     </button>
-    <a href="https://github.com/linear/linear" target="_blank" rel="noopener" class="btn btn-ghost" title="设计参考">文档</a>
+    <a href="https://github.com/GSuperior/xhs-agent" target="_blank" rel="noopener" class="btn btn-ghost" title="源码">GitHub</a>
   </div>
 </header>
+
+<!-- API key 未配置警告横幅 -->
+<div id="apiKeyBanner" class="hidden px-4 py-2 text-xs flex items-center justify-between gap-3" style="background: rgba(242,201,76,0.1); border-bottom: 1px solid rgba(242,201,76,0.3); color: var(--warn);">
+  <span>⚠ <b>未检测到 SENSENOVA_API_KEY</b> — 点击 Daily 会启动但 LLM 调用将失败。请在 Vercel 项目设置中添加环境变量。</span>
+  <a href="https://vercel.com/gsuperiors-projects/xhs-agent/settings/environment-variables" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:11px; padding:3px 8px;">去配置</a>
+</div>
 
 <!-- Main 3 columns -->
 <div class="flex-1 flex overflow-hidden">
@@ -288,7 +294,7 @@ const API = '';
 const POLL_INTERVAL = 2000;
 let stateOrder = [];
 let stateLabels = {};
-let current = { runId: null, runState: null, pollTimer: null, rightTab: 'preview' };
+let current = { runId: null, runState: null, pollTimer: null, rightTab: 'preview', renderedState: null };
 
 // =========================================================================
 // Utils
@@ -336,6 +342,23 @@ $('themeToggle').addEventListener('click', () => {
 applyTheme(localStorage.getItem('xhs-theme') || 'dark');
 
 // =========================================================================
+// API key 配置检测
+// =========================================================================
+async function checkApiKey() {
+  try {
+    const cfg = await api('/api/config');
+    if (!cfg.has_api_key) {
+      $('apiKeyBanner').classList.remove('hidden');
+      $('dailyBtn').disabled = true;
+      $('dailyBtn').title = '请先配置 SENSENOVA_API_KEY 环境变量';
+    } else {
+      $('apiKeyBanner').classList.add('hidden');
+      $('dailyBtn').disabled = false;
+    }
+  } catch (e) { /* 静默失败，不阻塞界面 */ }
+}
+
+// =========================================================================
 // Runs list
 // =========================================================================
 async function fetchRuns() {
@@ -374,6 +397,8 @@ function renderRuns(runs) {
 
 function stateBadge(st, webStatus) {
   if (webStatus === 'running') return '<span class="badge badge-brand">运行中</span>';
+  if (webStatus === 'stopping') return '<span class="badge badge-warn">停止中</span>';
+  if (webStatus === 'stopped') return '<span class="badge badge-warn">已停止</span>';
   if (st === 'COMPLETED') return '<span class="badge badge-success">完成</span>';
   if (st === 'FAILED') return '<span class="badge badge-error">失败</span>';
   if (st === 'HUMAN_REVIEW') return '<span class="badge badge-warn">人工</span>';
@@ -410,17 +435,42 @@ async function fetchState(rerenderAll) {
   try {
     const st = await api(`/api/runs/${current.runId}/state`);
     const prev = current.runState;
+    const stateChanged = !prev || prev.state !== st.state || prev.web_status !== st.web_status;
     current.runState = st;
-    renderRunDetail(st);
+    // 只在状态/web_status 变化时才整体重渲染，避免闪烁
+    if (rerenderAll || stateChanged || current.renderedState === null) {
+      renderRunDetail(st);
+      current.renderedState = st.state;
+    } else {
+      // 状态没变，只轻量更新进度条和 badge（不重建 DOM）
+      updateProgressLight(st.state);
+    }
     // stage transitions: refresh right pane when entering FINAL_CONFIRMATION / COMPLETED
     if (rerenderAll || (prev && prev.state !== st.state)) loadRightPane();
     // stop polling if terminal
     if (st.state === 'COMPLETED' || st.state === 'FAILED' || st.state === 'HUMAN_REVIEW') {
-      if (st.web_status !== 'running') stopPoll();
+      if (st.web_status !== 'running' && st.web_status !== 'stopping') stopPoll();
     }
   } catch (e) {
     $('runDetail').innerHTML = `<div class="card" style="border-color: var(--error); color: var(--error);">加载状态失败: ${esc(e.message)}</div>`;
   }
+}
+
+// 轻量更新进度条（不重建 DOM，只改 class）
+function updateProgressLight(curState) {
+  const wrap = document.querySelector('.progress-wrap');
+  if (!wrap) return;
+  let idx = stateOrder.indexOf(curState);
+  wrap.querySelectorAll('.progress-step').forEach((step, i) => {
+    const s = stateOrder[i];
+    let cls = '';
+    if (curState === 'COMPLETED') cls = 'done';
+    else if (s === curState) cls = (curState === 'FAILED') ? 'failed' : 'current';
+    else if (idx >= 0 && i < idx) cls = 'done';
+    step.className = 'progress-step ' + cls;
+    const dot = step.querySelector('.progress-dot');
+    if (dot) dot.textContent = cls === 'done' ? '✓' : (cls === 'failed' ? '!' : (i + 1));
+  });
 }
 
 // =========================================================================
@@ -459,26 +509,36 @@ function renderRunDetail(st) {
     return;
   }
   const cur = st.state || 'UNKNOWN';
-  const running = st.web_status === 'running';
+  const running = st.web_status === 'running' || st.web_status === 'stopping';
+  const stopping = st.web_status === 'stopping';
   const err = st.web_error;
+  const statusLabel = stopping ? '停止中…' : (running ? '运行中' : (st.web_status === 'stopped' ? '已停止' : fmtState(cur)));
   let html = `
     <div class="card">
       <div class="flex items-center justify-between mb-1">
         <div class="flex items-center gap-2">
           <h2 class="text-lg font-bold">Run</h2>
-          <span class="badge ${running ? 'badge-brand' : stateBadgeClass(cur)}">${running ? '运行中' : fmtState(cur)}</span>
+          <span class="badge ${running ? 'badge-brand' : (st.web_status === 'stopped' ? 'badge-warn' : stateBadgeClass(cur))}">${statusLabel}</span>
           ${running ? '<span class="spinner"></span>' : ''}
         </div>
-        <span class="text-xs mono" style="color: var(--text-faint);">${esc(st.run_id || current.runId)}</span>
+        <div class="flex items-center gap-2">
+          ${running ? `<button id="stopBtn" class="btn btn-danger" title="停止当前任务">■ 停止</button>` : ''}
+          <span class="text-xs mono" style="color: var(--text-faint);">${esc(st.run_id || current.runId)}</span>
+        </div>
       </div>
       ${renderProgress(cur)}
     </div>
   `;
 
-  if (err) {
+  if (err && st.web_status !== 'stopped') {
     html += `<div class="card" style="border-color: var(--error);">
       <div class="font-semibold" style="color: var(--error);">⚠ 任务出错</div>
       <div class="text-xs mt-1 mono" style="color: var(--text-dim);">${esc(err)}</div>
+    </div>`;
+  } else if (st.web_status === 'stopped') {
+    html += `<div class="card" style="border-color: var(--warn);">
+      <div class="font-semibold" style="color: var(--warn);">■ 任务已停止</div>
+      <div class="text-xs mt-1" style="color: var(--text-dim);">可在当前阶段继续操作或重新发起。</div>
     </div>`;
   }
 
@@ -496,6 +556,8 @@ function renderRunDetail(st) {
 
   el.innerHTML = html;
   bindStageActions(cur, running);
+  const sb = $('stopBtn');
+  if (sb) sb.addEventListener('click', stopRun);
 }
 
 function stateBadgeClass(cur) {
@@ -657,6 +719,20 @@ async function loadFinalConfirm() {
 // =========================================================================
 // Actions
 // =========================================================================
+async function stopRun() {
+  if (!current.runId) return;
+  try {
+    $('stopBtn') && ($('stopBtn').disabled = true);
+    await api(`/api/runs/${current.runId}/stop`, { method: 'POST' });
+    toast('已发送停止信号，任务将在当前步骤完成后中止…', 'success');
+    fetchState(true);
+    startPoll();
+  } catch (e) {
+    toast('停止失败: ' + e.message, 'error');
+    $('stopBtn') && ($('stopBtn').disabled = false);
+  }
+}
+
 async function startDaily() {
   try {
     $('dailyBtn').disabled = true;
@@ -768,29 +844,60 @@ function loadRightPane() {
 function loadPreview() {
   const pane = $('previewPane');
   pane.innerHTML = `<div class="flex-1 p-3 overflow-auto" style="background: var(--bg);"><div class="text-xs h-full flex items-center justify-center" style="color: var(--text-faint);"><div class="spinner"></div> 加载预览…</div></div>`;
-  // iframe via srcdoc fallback; use src directly
-  const wrap = document.createElement('div');
-  wrap.className = 'flex-1 p-3 overflow-hidden flex flex-col';
-  wrap.style.background = 'var(--bg)';
-  const iframe = document.createElement('iframe');
-  iframe.src = `/api/runs/${current.runId}/html`;
-  iframe.style.cssText = 'flex:1; width:100%; border:1px solid var(--border); border-radius:8px; background:#fff; min-height:0;';
-  iframe.onload = () => {};
-  iframe.onerror = () => {
-    pane.innerHTML = `<div class="text-xs p-4" style="color: var(--text-faint);">暂无 note.html（终稿尚未生成）</div>`;
-  };
-  // detect 404: fetch HEAD
+  // 检测 note.html 是否存在
   fetch(`/api/runs/${current.runId}/html`, { method: 'GET' }).then(r => {
     if (!r.ok) {
-      pane.innerHTML = `<div class="text-xs p-4" style="color: var(--text-faint);">暂无 note.html<br><span style="color: var(--text-dim);">终稿生成后此处展示预览</span></div>`;
-    } else {
-      wrap.innerHTML = '';
-      wrap.appendChild(iframe);
-      pane.innerHTML = '';
-      pane.appendChild(wrap);
+      pane.innerHTML = `<div class="flex-1 p-4 overflow-auto" style="background: var(--bg);"><div class="text-xs" style="color: var(--text-faint);">暂无 note.html<br><span style="color: var(--text-dim);">终稿生成后此处展示预览</span></div></div>`;
+      return;
+    }
+    // note.html 是 1080px 宽的固定画布，用 transform scale 适配容器
+    // 容器约 420-32=388px 宽，scale ≈ 0.35
+    const wrap = document.createElement('div');
+    wrap.className = 'flex-1 overflow-auto p-3';
+    wrap.style.background = 'var(--bg)';
+
+    const scaler = document.createElement('div');
+    scaler.style.cssText = 'width:1080px; transform-origin: top left; background:#fff; border-radius:8px; box-shadow: 0 4px 24px rgba(0,0,0,0.3);';
+
+    const iframe = document.createElement('iframe');
+    iframe.src = `/api/runs/${current.runId}/html`;
+    iframe.style.cssText = 'width:1080px; border:0; display:block; background:#fff;';
+    iframe.onload = () => {
+      try {
+        const h = iframe.contentDocument ? iframe.contentDocument.body.scrollHeight : 1440;
+        iframe.style.height = h + 'px';
+        scaler.style.height = h + 'px';
+      } catch {}
+      // 根据容器宽度计算缩放比例
+      const containerW = pane.clientWidth - 24; // 减去 padding
+      const scale = Math.min(containerW / 1080, 1);
+      scaler.style.transform = `scale(${scale})`;
+      // scaler 缩放后占据的高度 = 原高度 * scale
+      const realH = parseInt(iframe.style.height) || 1440;
+      scaler.style.height = (realH * scale) + 'px';
+    };
+
+    scaler.appendChild(iframe);
+    wrap.appendChild(scaler);
+    pane.innerHTML = '';
+    pane.appendChild(wrap);
+
+    // 窗口大小变化时重新计算缩放
+    if (!current._previewResize) {
+      current._previewResize = true;
+      window.addEventListener('resize', () => {
+        const sc = pane.querySelector('div > div'); // scaler
+        if (sc && sc.style.transform) {
+          const containerW = pane.clientWidth - 24;
+          const scale = Math.min(containerW / 1080, 1);
+          sc.style.transform = `scale(${scale})`;
+          const realH = parseInt(sc.querySelector('iframe').style.height) || 1440;
+          sc.style.height = (realH * scale) + 'px';
+        }
+      });
     }
   }).catch(() => {
-    pane.innerHTML = `<div class="text-xs p-4" style="color: var(--error);">预览加载失败</div>`;
+    pane.innerHTML = `<div class="flex-1 p-4 overflow-auto" style="background: var(--bg);"><div class="text-xs" style="color: var(--error);">预览加载失败</div></div>`;
   });
 }
 
@@ -833,6 +940,7 @@ async function loadLog() {
 $('dailyBtn').addEventListener('click', startDaily);
 $('refreshRuns').addEventListener('click', fetchRuns);
 
+checkApiKey();
 fetchRuns();
 </script>
 </body>
