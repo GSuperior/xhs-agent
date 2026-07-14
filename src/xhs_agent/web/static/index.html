@@ -202,6 +202,9 @@
     </div>
   </div>
   <div class="flex items-center gap-2">
+    <button id="configBtn" class="btn btn-secondary" title="配置 API Key" onclick="openConfigModal()">
+      <span>🔑</span><span id="configBtnLabel">配置 API Key</span>
+    </button>
     <button id="themeToggle" class="btn btn-ghost" title="切换主题">
       <span id="themeIcon">🌙</span>
     </button>
@@ -211,8 +214,8 @@
 
 <!-- API key 未配置警告横幅 -->
 <div id="apiKeyBanner" class="hidden px-4 py-2 text-xs flex items-center justify-between gap-3" style="background: rgba(242,201,76,0.1); border-bottom: 1px solid rgba(242,201,76,0.3); color: var(--warn);">
-  <span>⚠ <b>未检测到 SENSENOVA_API_KEY</b> — 点击 Daily 会启动但 LLM 调用将失败。请在 Vercel 项目设置中添加环境变量。</span>
-  <a href="https://vercel.com/gsuperiors-projects/xhs-agent/settings/environment-variables" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:11px; padding:3px 8px;">去配置</a>
+  <span>⚠ <b>未检测到 API Key</b> — 请点击右上角"配置 API Key"按钮输入你的 SenseNova API Key。</span>
+  <button class="btn btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="openConfigModal()">立即配置</button>
 </div>
 
 <!-- Main 3 columns -->
@@ -286,6 +289,31 @@
   </div>
 </div>
 
+<!-- Config modal -->
+<div id="configModal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center" style="background: rgba(0,0,0,0.5);">
+  <div class="card w-[480px] flex flex-col gap-3" style="background: var(--bg-elev);">
+    <div>
+      <div class="font-semibold text-base">🔑 配置 API Key</div>
+      <div class="text-xs mt-1" style="color: var(--text-dim);">API Key 保存在浏览器 localStorage，每次请求自动透传给后端。无需在 Vercel 后台配置。</div>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-xs" style="color: var(--text-dim);">SenseNova API Key</label>
+      <input id="configApiKey" type="password" class="input" placeholder="sk-..." autocomplete="off" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-xs" style="color: var(--text-dim);">Base URL（默认 SenseNova 兼容地址）</label>
+      <input id="configBaseUrl" class="input" placeholder="https://api.sensenova.cn/compatible-mode/v1" autocomplete="off" />
+    </div>
+    <div class="text-[11px] px-2 py-1.5 rounded" style="color: var(--warn); background: rgba(242,201,76,0.08); border: 1px solid rgba(242,201,76,0.2);">
+      ⚠ Key 仅存在你的浏览器，不会上传到 GitHub 或 Vercel 后台。切换浏览器需重新输入。
+    </div>
+    <div class="flex justify-end gap-2">
+      <button id="configCancel" class="btn btn-secondary" onclick="closeConfigModal()">取消</button>
+      <button id="configSave" class="btn btn-primary" onclick="saveConfig()">保存</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // =========================================================================
 // State
@@ -312,10 +340,13 @@ function toast(msg, type) {
 }
 
 async function api(path, opts) {
-  const res = await fetch(API + path, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opts,
-  });
+  const headers = { 'Content-Type': 'application/json', ...(opts && opts.headers || {}) };
+  // 自动带上 localStorage 中的 API key
+  const ak = localStorage.getItem('xhs_api_key') || '';
+  const bu = localStorage.getItem('xhs_base_url') || '';
+  if (ak) headers['X-API-Key'] = ak;
+  if (bu) headers['X-Base-URL'] = bu;
+  const res = await fetch(API + path, { ...opts, headers });
   if (!res.ok) {
     let detail = `${res.status}`;
     try { const j = await res.json(); detail = j.detail || JSON.stringify(j); } catch { try { detail = await res.text(); } catch {} }
@@ -342,20 +373,55 @@ $('themeToggle').addEventListener('click', () => {
 applyTheme(localStorage.getItem('xhs-theme') || 'dark');
 
 // =========================================================================
-// API key 配置检测
+// API key 配置检测 + 前端配置
 // =========================================================================
 async function checkApiKey() {
+  // 先看 localStorage（前端配置的 key）
+  const localKey = localStorage.getItem('xhs_api_key') || '';
+  if (localKey) {
+    $('apiKeyBanner').classList.add('hidden');
+    $('dailyBtn').disabled = false;
+    $('dailyBtn').title = '启动每日热点发现';
+    $('configBtnLabel').textContent = '已配置';
+    return;
+  }
+  // 再看后端环境变量
   try {
     const cfg = await api('/api/config');
     if (!cfg.has_api_key) {
       $('apiKeyBanner').classList.remove('hidden');
       $('dailyBtn').disabled = true;
-      $('dailyBtn').title = '请先配置 SENSENOVA_API_KEY 环境变量';
+      $('dailyBtn').title = '请先配置 API key';
+      $('configBtnLabel').textContent = '配置 API Key';
     } else {
       $('apiKeyBanner').classList.add('hidden');
       $('dailyBtn').disabled = false;
+      $('configBtnLabel').textContent = '已配置';
     }
-  } catch (e) { /* 静默失败，不阻塞界面 */ }
+  } catch (e) { /* 静默失败 */ }
+}
+
+function openConfigModal() {
+  $('configModal').classList.remove('hidden');
+  $('configApiKey').value = localStorage.getItem('xhs_api_key') || '';
+  $('configBaseUrl').value = localStorage.getItem('xhs_base_url') || 'https://api.sensenova.cn/compatible-mode/v1';
+  setTimeout(() => $('configApiKey').focus(), 50);
+}
+function closeConfigModal() { $('configModal').classList.add('hidden'); }
+
+async function saveConfig() {
+  const ak = $('configApiKey').value.trim();
+  const bu = $('configBaseUrl').value.trim();
+  if (!ak) { toast('请输入 API Key', 'error'); return; }
+  localStorage.setItem('xhs_api_key', ak);
+  if (bu) localStorage.setItem('xhs_base_url', bu);
+  // 同步到后端进程（让当前实例立即可用）
+  try {
+    await api('/api/config', { method: 'POST', body: JSON.stringify({ api_key: ak, base_url: bu }) });
+  } catch (e) { /* 头部中间件也会同步，这里失败不阻塞 */ }
+  closeConfigModal();
+  await checkApiKey();
+  toast('API Key 已保存，可以开始使用了', 'success');
 }
 
 // =========================================================================
@@ -939,6 +1005,8 @@ async function loadLog() {
 // =========================================================================
 $('dailyBtn').addEventListener('click', startDaily);
 $('refreshRuns').addEventListener('click', fetchRuns);
+$('configApiKey').addEventListener('keydown', (e) => { if (e.key === 'Enter') saveConfig(); });
+$('configBaseUrl').addEventListener('keydown', (e) => { if (e.key === 'Enter') saveConfig(); });
 
 checkApiKey();
 fetchRuns();

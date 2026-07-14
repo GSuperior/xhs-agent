@@ -89,7 +89,7 @@ except ImportError:  # 以脚本方式运行：python src/xhs_agent/web.py
     from xhs_agent.schemas.visual import AvailableAssets
     from xhs_agent.agents import DiscoveryCandidates
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -572,6 +572,47 @@ def get_config() -> JSONResponse:
         "base_url_configured": bool(base_url),
         "is_vercel": _IS_VERCEL,
     })
+
+
+class ConfigBody(BaseModel):
+    api_key: str = ""
+    base_url: str = ""
+
+
+@app.post("/api/config")
+def set_config(body: ConfigBody) -> JSONResponse:
+    """前端配置 API key —— 写入进程级 os.environ，后续所有 Agent 调用生效。
+
+    注意：Vercel Serverless 冷启动会丢失，前端需把 key 存 localStorage
+    并在每次请求带上 X-API-Key 头（中间件会自动同步）。
+    """
+    changed = []
+    if body.api_key.strip():
+        os.environ["SENSENOVA_API_KEY"] = body.api_key.strip()
+        changed.append("api_key")
+    if body.base_url.strip():
+        os.environ["SENSENOVA_BASE_URL"] = body.base_url.strip()
+        changed.append("base_url")
+    return JSONResponse({
+        "ok": True,
+        "changed": changed,
+        "has_api_key": bool(os.getenv("SENSENOVA_API_KEY", "").strip()),
+    })
+
+
+@app.middleware("http")
+async def api_key_middleware(request: Request, call_next):
+    """从请求头 X-API-Key / X-Base-URL 自动同步到 os.environ。
+
+    这样前端只需在每次 fetch 带上头，无需依赖进程级持久化。
+    """
+    ak = request.headers.get("X-API-Key", "").strip()
+    bu = request.headers.get("X-Base-URL", "").strip()
+    if ak:
+        os.environ["SENSENOVA_API_KEY"] = ak
+    if bu:
+        os.environ["SENSENOVA_BASE_URL"] = bu
+    return await call_next(request)
 
 
 # ===========================================================================
