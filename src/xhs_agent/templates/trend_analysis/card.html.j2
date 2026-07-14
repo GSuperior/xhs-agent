@@ -1,0 +1,214 @@
+{# ===== 卡片片段（不含 DOCTYPE/html/head/body，样式在 page 级模板 <head> 中）=====
+   按 layout_card.template 字段分发到不同视觉结构：
+   cover / timeline / trend / comparison / case / conclusion
+   series_label 与 content_type_label 均动态渲染，不硬编码。
+   trend_analysis 封面额外含时间线箭头装饰。 #}
+{% set tpl = (layout_card | default({})).template | default("") %}
+
+{% if tpl == "cover" %}
+{# ===== 封面（趋势判断，含时间线箭头装饰） ===== #}
+<div class="card cover">
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="series-label">{{ cover.series_label | default("") }}</div>
+  <div class="timeline-arrow">
+    <div class="arrow-dot"></div>
+    <div class="arrow-line"></div>
+    <div class="arrow-dot"></div>
+    <div class="arrow-line"></div>
+    <div class="arrow-head"></div>
+  </div>
+  <div class="main-title">{{ card_heading }}</div>
+  {% if key_message %}
+  <div class="subtitle">{{ key_message }}</div>
+  {% endif %}
+  <div class="badge">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+
+{% elif tpl == "timeline" %}
+{# ===== 时间线：左侧时间轴 + 右侧条目列表 ===== #}
+<div class="card content-card timeline-card">
+  <div class="torn-top"></div>
+  {% if card_heading %}
+  <div class="heading">{{ card_heading }}</div>
+  {% endif %}
+  <div class="timeline-list">
+    <div class="timeline-line"></div>
+    {% if card_content and card_content['items'] %}
+    {% for item in card_content['items'] %}
+    <div class="timeline-item">
+      {% if loop.first and card_content.header %}
+      <div class="timeline-item-header">{{ card_content.header }}</div>
+      {% endif %}
+      <div class="timeline-item-text">{{ item }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="timeline-item">
+      <div class="timeline-item-text">{{ key_message }}</div>
+    </div>
+    {% endif %}
+  </div>
+  <div class="caption">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+
+{% elif tpl == "trend" %}
+{# ===== 趋势：上方大字趋势 + 下方信号格 ===== #}
+<div class="card content-card trend-card">
+  <div class="torn-top"></div>
+  {% if card_heading %}
+  <div class="heading">{{ card_heading }}</div>
+  {% endif %}
+  <div class="trend-headline">
+    {{ card_content.header if card_content and card_content.header else (card_content.raw_text if card_content else key_message) }}
+  </div>
+  <div class="trend-arrow">↑</div>
+  <div class="trend-signals">
+    {% if card_content and card_content['items'] %}
+    {% for item in card_content['items'] %}
+    <div class="trend-signal">
+      <div class="trend-signal-num">{{ loop.index }}</div>
+      <div class="trend-signal-text">{{ item }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="trend-signal">
+      <div class="trend-signal-num">1</div>
+      <div class="trend-signal-text">{{ key_message }}</div>
+    </div>
+    {% endif %}
+  </div>
+  <div class="caption">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+
+{% elif tpl == "comparison" %}
+{# ===== 对比：多列对比网格 + 底部总结行 ===== #}
+<div class="card content-card comparison-card">
+  <div class="torn-top"></div>
+  {% if card_heading %}
+  <div class="heading">{{ card_heading }}</div>
+  {% endif %}
+  <div class="comp-grid">
+    {% if card_content and card_content['items'] %}
+    {% for item in card_content['items'] %}
+    <div class="comp-col">
+      <div class="comp-col-header">{{ item }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="comp-col">
+      <div class="comp-col-header">{{ key_message }}</div>
+    </div>
+    {% endif %}
+  </div>
+  {% if card_content and card_content.footer %}
+  <div class="comp-footer">{{ card_content.footer }}</div>
+  {% endif %}
+  <div class="caption">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+
+{% elif tpl == "case" %}
+{# ===== 案例：双栏对比（标签从 block_items header 推导） ===== #}
+<div class="card content-card case-card">
+  <div class="torn-top"></div>
+  {% if card_heading %}
+  <div class="heading">{{ card_heading }}</div>
+  {% endif %}
+  <div class="case-grid">
+    {% if card_content and card_content['block_items'] and (card_content['block_items'] | length) >= 2 %}
+    {# 有多个 block_item 时，每个作为独立列 #}
+    {% for bi in card_content['block_items'] %}
+    <div class="case-col">
+      <div class="case-col-title">{{ bi.header if bi.header else '场景' + loop.index|string }}</div>
+      <div class="case-col-item">{{ bi.text }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    {# 只有 1 个 block_item 时，左右各展示一半内容 #}
+    <div class="case-col">
+      <div class="case-col-title">场景A</div>
+      {% if card_content and card_content['items'] %}
+      {% for item in card_content['items'] %}
+      {% if loop.index0 < ((card_content['items'] | length + 1) // 2) %}
+      <div class="case-col-item">{{ item }}</div>
+      {% endif %}
+      {% endfor %}
+      {% else %}
+      <div class="case-col-item">{{ key_message }}</div>
+      {% endif %}
+    </div>
+    <div class="case-col">
+      <div class="case-col-title">场景B</div>
+      {% if card_content and card_content['items'] %}
+      {% for item in card_content['items'] %}
+      {% if loop.index0 >= ((card_content['items'] | length + 1) // 2) %}
+      <div class="case-col-item">{{ item }}</div>
+      {% endif %}
+      {% endfor %}
+      {% else %}
+      <div class="case-col-item">暂无</div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="caption">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+
+{% elif tpl == "conclusion" %}
+{# ===== 结论：居中核心观点 + 下方要点列表 ===== #}
+<div class="card content-card conclusion-card">
+  <div class="torn-top"></div>
+  <div class="concl-center">
+    <div class="concl-message">
+      {{ card_content.raw_text if card_content and card_content.raw_text else key_message }}
+    </div>
+  </div>
+  <div class="concl-points">
+    {% if card_content and card_content['items'] %}
+    {% for item in card_content['items'] %}
+    <div class="concl-point">
+      <div class="concl-point-num">{{ loop.index }}</div>
+      <div class="concl-point-text">{{ item }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="concl-point">
+      <div class="concl-point-num">1</div>
+      <div class="concl-point-text">{{ key_message }}</div>
+    </div>
+    {% endif %}
+  </div>
+  {% if card_content and card_content.footer %}
+  <div class="concl-opportunity">{{ card_content.footer }}</div>
+  {% endif %}
+  <div class="caption">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+
+{% else %}
+{# ===== 默认内容卡片 ===== #}
+<div class="card content-card">
+  <div class="torn-top"></div>
+  {% if card_heading %}
+  <div class="heading">{{ card_heading }}</div>
+  {% endif %}
+  {% if blocks %}
+  <div class="white-card">
+    <div class="body">
+      {% for block in blocks %}
+      <div class="block-item">{{ block.text }}</div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% for asset in assets %}
+  {% if asset.type == "logo" or asset.type == "screenshot" or asset.type == "illustration" %}
+  <div class="highlight-card">
+    <div class="body">{{ asset.local_ref }}</div>
+  </div>
+  {% endif %}
+  {% endfor %}
+  <div class="caption">{{ account_name | default("AI产品经理GSuperior") }} · {{ content_type_label | default("") }}</div>
+</div>
+{% endif %}

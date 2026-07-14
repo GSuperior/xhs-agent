@@ -1,0 +1,120 @@
+{
+  "editorial_thesis": {
+    "statement": "2026年大厂AI Agent产品从Demo走向落地，但真正的产品化挑战不是技术，而是任务拆解、状态管理和用户预期管理。不同厂商策略分化明显，预计2年内覆盖30%重复性数字工作，但产品差异化将决定谁能规模化。",
+    "supporting_claim_refs": [
+      "c5",
+      "c6",
+      "c7",
+      "c8"
+    ],
+    "certainty": "medium"
+  },
+  "cards": [
+    {
+      "card_id": "card_1",
+      "purpose": "封面",
+      "key_message": "2026大厂都在赌AI Agent，但真正的挑战是什么？",
+      "key_points": [
+        "2026年大厂密集发布AI Agent产品",
+        "从Demo到产品，核心挑战不在技术",
+        "产品经理视角解读Agent产品化真相"
+      ],
+      "claim_refs": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5"
+      ],
+      "thesis_ref": null,
+      "visual_type": "cover",
+      "max_chars": 30
+    },
+    {
+      "card_id": "card_2",
+      "purpose": "发生了什么",
+      "key_message": "2026上半年，OpenAI、Google、Anthropic及国内大厂密集发布Agent产品",
+      "key_points": [
+        "OpenAI 3月发布Operator，定位通用多步任务Agent",
+        "Google集成Agent能力到Gemini/Workspace生态",
+        "Anthropic发布Agent产品，强调安全可控",
+        "国内字节、阿里、腾讯同步加速Agent平台布局"
+      ],
+      "claim_refs": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "thesis_ref": null,
+      "visual_type": "timeline",
+      "max_chars": 40
+    },
+    {
+      "card_id": "card_3",
+      "purpose": "为什么值得关注",
+      "key_message": "Agent产品化进入深水区，行业共识称2026年为Agent产品化元年",
+      "key_points": [
+        "Agent已从概念验证转向实际产品落地",
+        "密集发布意味着行业进入产品验证期",
+        "商业化落地成为核心挑战，而非技术可行性"
+      ],
+      "claim_refs": [
+        "c5"
+      ],
+      "thesis_ref": null,
+      "visual_type": "trend",
+      "max_chars": 60
+    },
+    {
+      "card_id": "card_4",
+      "purpose": "核心机制：厂商策略对比",
+      "key_message": "三大厂商策略分化：通用能力 vs 生态集成 vs 安全可控",
+      "key_points": [
+        "OpenAI：通用Agent，跨应用执行任务",
+        "Google：深度集成Workspace生态",
+        "Anthropic：强调安全边界和可控性",
+        "国内大厂：结合自有生态（豆包/通义/混元）布局"
+      ],
+      "claim_refs": [
+        "c7"
+      ],
+      "thesis_ref": null,
+      "visual_type": "comparison",
+      "max_chars": 80
+    },
+    {
+      "card_id": "card_5",
+      "purpose": "用户场景",
+      "key_message": "Agent产品核心设计挑战：任务拆解、状态管理、用户预期管理",
+      "key_points": [
+        "复杂任务的自动拆解是首要难点",
+        "多步骤执行中的状态管理关键",
+        "用户预期设定直接影响产品满意度"
+      ],
+      "claim_refs": [
+        "c6"
+      ],
+      "thesis_ref": null,
+      "visual_type": "case",
+      "max_chars": 80
+    },
+    {
+      "card_id": "card_6",
+      "purpose": "PM判断",
+      "key_message": "Agent产品化已启动，但产品差异化将决定谁能规模化",
+      "key_points": [
+        "预计到2027年覆盖30%重复性数字工作",
+        "技术不是瓶颈，产品设计能力才是分水岭",
+        "策略分化意味着市场将快速洗牌",
+        "用户需警惕营销话术，关注真实能力边界"
+      ],
+      "claim_refs": [
+        "c8"
+      ],
+      "thesis_ref": "editorial_thesis",
+      "visual_type": "conclusion",
+      "max_chars": 100
+    }
+  ]
+}

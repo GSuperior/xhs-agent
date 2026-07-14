@@ -1,0 +1,15 @@
+{
+  "status": "revise",
+  "issue_type": "evidence",
+  "route_to": "researching",
+  "issues": [
+    {
+      "rule_id": "EVIDENCE_001",
+      "location": "all claims (c1-c8)",
+      "problem": "所有 claims 的证据来源均标注为 'llm_knowledge'，未经实时验证。这些来源的 URL 虽然指向真实链接，但具体内容、发布时间和细节均基于模型知识生成，缺乏直接可访问的页面或快照支撑。因此来源的可靠性和及时性不足，无法确认 claims 是否被实际来源直接支持。",
+      "severity": "major",
+      "suggested_action": "对每个 claim 对应的来源进行实时搜索验证，获取实际页面内容并更新 source 字段（如 snapshot_ref、url、published_at 等），确保证据可追溯且准确。"
+    }
+  ],
+  "severity": "none"
+}

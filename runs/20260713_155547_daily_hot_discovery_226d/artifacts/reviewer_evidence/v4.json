@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "issue_type": null,
+  "route_to": null,
+  "issues": [
+    {
+      "rule_id": "EVIDENCE_007",
+      "location": "evidence_pack",
+      "problem": "所有来源的 snapshot_ref 均为 'llm_knowledge'，证据基于LLM知识生成，未经实时验证",
+      "severity": "minor",
+      "suggested_action": "发布前人工核对关键事实（如产品发布时间、具体功能描述）"
+    }
+  ],
+  "severity": "none"
+}

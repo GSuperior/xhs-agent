@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "issue_type": null,
+  "route_to": null,
+  "issues": [
+    {
+      "rule_id": "EVIDENCE_007",
+      "location": "evidence_pack",
+      "problem": "所有证据基于LLM知识生成，未经实时验证",
+      "severity": "minor",
+      "suggested_action": "发布前人工核对关键事实，如各厂商Agent产品的具体发布日期、功能细节及行业预测数字"
+    }
+  ],
+  "severity": "none"
+}

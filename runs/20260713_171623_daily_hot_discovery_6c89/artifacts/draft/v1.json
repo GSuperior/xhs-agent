@@ -1,0 +1,192 @@
+{
+  "post_title_candidates": [
+    {
+      "text": "AI Agent做到一半忘了日期，这锅该谁背？",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c1",
+        "c2"
+      ]
+    },
+    {
+      "text": "别追通用Agent了，2026年PM的机会在任务拆解",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c4"
+      ]
+    },
+    {
+      "text": "2026上半年4家大厂Agent产品，我挑出3个设计差异",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c1"
+      ],
+      "supporting_claim_refs": []
+    }
+  ],
+  "cover": {
+    "card_id": "card_1",
+    "series_label": "趋势解读",
+    "main_title": "AI Agent产品化元年",
+    "subtitle": {
+      "text": "从问答到执行的产品跃迁",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c1",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    }
+  },
+  "blocks": [
+    {
+      "block_id": "b1",
+      "surface": "card",
+      "card_id": "card_2",
+      "text": "OpenAI的Operator能自主浏览网页完成多步骤任务，比如帮你订机票时自动比价、填表、支付。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b2",
+      "surface": "card",
+      "card_id": "card_2",
+      "text": "Google Gemini Agent主打跨应用自动化，比如自动把邮件附件整理到指定文件夹并生成摘要。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b3",
+      "surface": "card",
+      "card_id": "card_2",
+      "text": "Anthropic Claude Agent强调安全边界，比如执行任务前会先列出所有操作步骤供用户确认。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b4",
+      "surface": "card",
+      "card_id": "card_3",
+      "text": "Agent不再只是回答问题，而是真正替用户完成任务，比如自动整理邮件、预订行程、比价购物。",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c1",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b5",
+      "surface": "card",
+      "card_id": "card_3",
+      "text": "2026年被视为AI Agent产品化元年，大厂集体押注赛道确定性极高。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b6",
+      "surface": "card",
+      "card_id": "card_4",
+      "text": "传统AI工具是被动回答问题，单次交互；AI Agent能主动规划任务、多步执行、调用工具。",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c2",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b7",
+      "surface": "card",
+      "card_id": "card_4",
+      "text": "核心能力差异在于任务流程设计、工具编排、安全边界设定，而非单纯模型能力。",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c2",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b8",
+      "surface": "card",
+      "card_id": "card_5",
+      "text": "个人场景：预订行程、自动整理邮件、比价购物；企业场景：自动生成周报、跨系统数据同步。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1",
+        "c2"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b9",
+      "surface": "card",
+      "card_id": "card_5",
+      "text": "用户角色从'提问者'变成'任务发起者'，比如直接说'帮我订明天去上海的机票'。",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c1",
+        "c2"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b10",
+      "surface": "card",
+      "card_id": "card_6",
+      "text": "PM需要从功能设计思维转向流程编排思维，核心能力包括工具编排、安全边界设定、任务可靠性设计。",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c3"
+      ]
+    },
+    {
+      "block_id": "b11",
+      "surface": "card",
+      "card_id": "card_6",
+      "text": "当前Agent产品仍处于早期，可靠性和安全性是最大挑战，比如任务执行中途出错如何回退。",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c3"
+      ]
+    },
+    {
+      "block_id": "b12",
+      "surface": "card",
+      "card_id": "card_6",
+      "text": "具备Agent设计能力的PM将成为未来2年的稀缺人才，但需警惕过度承诺用户预期。",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c3"
+      ]
+    }
+  ],
+  "body_text": "看了上面四家打法，我想说的是另一件事。\n\n大厂都在卷模型能力，但我自己用下来，真正卡脖子的不是模型不够聪明，是产品设计没人想清楚'任务做一半挂了怎么办'。你让Agent帮你订机票，填到一半它忘了出发日期，这种时候是重头来还是给个回退按钮？四家产品都没给好答案。\n\n我的判断是：2026年Agent产品拼的不是模型跑分，是谁先把'可中断+可回看+可纠错'这套交互做出来。比如把多步骤任务做成状态机，让用户随时能看到Agent走到哪一步，随时能暂停或修改参数。这比单纯堆砌工具调用能力更重要。\n\n当前证据显示，大厂Agent产品仍处于早期阶段（c1），可靠性问题普遍存在。但赛道确定性极高（c4），因为用户已经从'提问者'变成'任务发起者'（c2）。PM需要警惕的是：别把Agent当成万能助手，而是设计成'可解释的协作者'——用户必须能理解Agent的每一步操作逻辑。\n\n时间边界上，这个判断适用于2026-2027年（c3），但Agent产品形态可能快速迭代。我自己的体感是：未来12个月，能解决'任务中断恢复'问题的产品会率先突围。",
+  "tags": [
+    "#趋势解读",
+    "#AI产品经理",
+    "#AI Agent",
+    "#职场人",
+    "#2026AI趋势",
+    "#产品思维",
+    "#任务自动化"
+  ]
+}

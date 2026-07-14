@@ -1,0 +1,119 @@
+{
+  "template": "trend_analysis",
+  "cards": [
+    {
+      "card_id": "card_1",
+      "template": "cover",
+      "layout": "全幅封面，黑白极简，主标题居中，副标题下方，系列标签顶部",
+      "hierarchy": [
+        "series_label",
+        "main_title",
+        "subtitle"
+      ],
+      "emphasis": [
+        "main_title"
+      ],
+      "icon_keys": []
+    },
+    {
+      "card_id": "card_2",
+      "template": "timeline",
+      "layout": "上标题下时间线，三家大厂产品按时间顺序排列，每项配图标和简短描述",
+      "hierarchy": [
+        "heading",
+        "timeline_items",
+        "key_points"
+      ],
+      "emphasis": [
+        "timeline_items"
+      ],
+      "icon_keys": [
+        "clock",
+        "rocket",
+        "shield"
+      ]
+    },
+    {
+      "card_id": "card_3",
+      "template": "comparison",
+      "layout": "上标题下双栏对比，左侧传统AI工具，右侧AI Agent，中间箭头表示跃迁",
+      "hierarchy": [
+        "heading",
+        "left_column",
+        "right_column",
+        "transition_arrow"
+      ],
+      "emphasis": [
+        "right_column",
+        "transition_arrow"
+      ],
+      "icon_keys": [
+        "chat",
+        "arrow-right",
+        "automation"
+      ]
+    },
+    {
+      "card_id": "card_4",
+      "template": "comparison",
+      "layout": "上标题下双栏对比，左侧Chatbot特征，右侧Agent特征，底部核心能力标签",
+      "hierarchy": [
+        "heading",
+        "left_column",
+        "right_column",
+        "core_capabilities"
+      ],
+      "emphasis": [
+        "right_column",
+        "core_capabilities"
+      ],
+      "icon_keys": [
+        "message",
+        "workflow",
+        "tool",
+        "shield"
+      ]
+    },
+    {
+      "card_id": "card_5",
+      "template": "case",
+      "layout": "上标题下双场景卡片，左侧个人场景，右侧企业场景，底部用户角色转变提示",
+      "hierarchy": [
+        "heading",
+        "personal_scenario",
+        "enterprise_scenario",
+        "role_shift"
+      ],
+      "emphasis": [
+        "personal_scenario",
+        "enterprise_scenario"
+      ],
+      "icon_keys": [
+        "user",
+        "building",
+        "calendar",
+        "mail",
+        "chart"
+      ]
+    },
+    {
+      "card_id": "card_6",
+      "template": "conclusion",
+      "layout": "上标题下要点列表，三条核心判断，底部结论强调框",
+      "hierarchy": [
+        "heading",
+        "key_points",
+        "conclusion_statement"
+      ],
+      "emphasis": [
+        "conclusion_statement"
+      ],
+      "icon_keys": [
+        "lightbulb",
+        "warning",
+        "star"
+      ]
+    }
+  ],
+  "design_token_ref": "config/design_token.json"
+}

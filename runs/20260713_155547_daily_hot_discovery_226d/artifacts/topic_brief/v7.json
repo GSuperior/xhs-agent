@@ -1,0 +1,19 @@
+{
+  "topic": "AI Agent 从 Demo 到产品：2026 年大厂都在赌什么？",
+  "target_reader": "互联网职场人（PM/运营/开发）、AI 从业者、求职转行者",
+  "reader_problem": "2026 年上半年，OpenAI、Google、Anthropic 等大厂密集发布 AI Agent 相关产品，从概念验证转向实际产品落地。国内字节、阿里、腾讯也在加速布局 Agent 平台。",
+  "one_sentence_value": "Agent 是 2026 年 AI 产品化的核心战场，大厂密集发布意味着行业进入产品验证期。用户需要理解 Agent 产品的真实能力边界，避免被营销话术误导。",
+  "core_angle": "从产品经理视角分析 Agent 产品的核心设计挑战：任务拆解、状态管理、用户预期管理。对比不同厂商的产品策略差异，判断哪些设计模式真正可规模化。",
+  "content_type": "trend_analysis",
+  "content_type_label": "趋势解读",
+  "topic_subtype": null,
+  "hook": "Agent 是 2026 年 AI 产品化的核心战场，大厂密集发布意味着行业进入产品验证期。用户需要理解 Agent 产品的真实能力边界，避免被营销话术误导。",
+  "expected_takeaway": [],
+  "differentiation": "从产品经理视角分析 Agent 产品的核心设计挑战：任务拆解、状态管理、用户预期管理。对比不同厂商的产品策略差异，判断哪些设计模式真正可规模化。",
+  "avoid": [],
+  "research_questions": [],
+  "angle_hypothesis": {
+    "statement": "从产品经理视角分析 Agent 产品的核心设计挑战：任务拆解、状态管理、用户预期管理。对比不同厂商的产品策略差异，判断哪些设计模式真正可规模化。",
+    "questions_to_verify": []
+  }
+}

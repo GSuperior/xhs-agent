@@ -1,0 +1,40 @@
+# 敏感配置（包含 API Key，绝不推送）
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 运行时日志（runs 产物本身保留作为展示数据，只忽略临时日志）
+*.log
+
+# Playwright
+.playwright/
+
+# Vercel
+.vercel/

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080, height=1440">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1080px;
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #FFFFFF;
+}
+.page { width: 1080px; }
+.card {
+  width: 1080px;
+  height: 1440px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* ===== 封面 cover ===== */
+.cover {
+  background: #FFFFFF;
+  color: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72px;
+}
+.cover .series-label {
+  font-size: 34px;
+  color: #999;
+  letter-spacing: 3px;
+  margin-bottom: 32px;
+  font-weight: 500;
+}
+.cover .main-title {
+  font-size: 76px;
+  font-weight: 800;
+  color: #000000;
+  text-align: center;
+  line-height: 1.25;
+  max-width: 800px;
+  word-break: break-word;
+}
+.cover .subtitle {
+  font-size: 34px;
+  color: #666;
+  margin-top: 32px;
+  text-align: center;
+  line-height: 1.55;
+  max-width: 700px;
+}
+.cover .badge {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000000;
+  color: #FFFFFF;
+  border-radius: 999px;
+  padding: 12px 32px;
+  font-size: 26px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.cover .corner {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 3px solid #000000;
+}
+.cover .corner-tl { top: 48px; left: 48px; border-right: none; border-bottom: none; }
+.cover .corner-tr { top: 48px; right: 48px; border-left: none; border-bottom: none; }
+.cover .corner-bl { bottom: 48px; left: 48px; border-right: none; border-top: none; }
+.cover .corner-br { bottom: 48px; right: 48px; border-left: none; border-top: none; }
+.cover .timeline-arrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.cover .arrow-line { width: 80px; height: 3px; background: #000000; }
+.cover .arrow-head {
+  width: 0; height: 0;
+  border-left: 16px solid #000000;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+.cover .arrow-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #FF6B8A;
+}
+
+/* ===== 内容卡片通用 ===== */
+.content-card {
+  background: #F5F0E8;
+  padding: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.content-card .torn-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 12px;
+  background-image: linear-gradient(135deg, transparent 50%, #F5F0E8 50%),
+                      linear-gradient(225deg, transparent 50%, #F5F0E8 50%);
+  background-size: 24px 12px;
+  background-repeat: repeat-x;
+}
+.content-card .heading {
+  font-size: 48px;
+  font-weight: 700;
+  color: #333333;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+.content-card .body {
+  font-size: 32px;
+  color: #333333;
+  line-height: 1.55;
+}
+.content-card .caption {
+  font-size: 24px;
+  color: #999;
+  margin-top: auto;
+  padding-top: 16px;
+  text-align: center;
+}
+.content-card .white-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.content-card .highlight-card {
+  background: #FF6B8A;
+  color: #fff;
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 4px 24px rgba(255,107,138,0.2);
+}
+
+/* ===== timeline 时间线 ===== */
+.timeline-card .timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  padding-left: 56px;
+  flex: 1;
+}
+.timeline-card .timeline-line {
+  position: absolute;
+  left: 16px; top: 20px; bottom: 20px;
+  width: 4px;
+  background: #FF6B8A;
+  opacity: 0.3;
+  border-radius: 2px;
+}
+.timeline-card .timeline-item {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.timeline-card .timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -46px; top: 26px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #FF6B8A;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 2px #FF6B8A;
+}
+.timeline-card .timeline-item-header {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FF6B8A;
+  margin-bottom: 6px;
+}
+.timeline-card .timeline-item-text {
+  font-size: 32px;
+  color: #333333;
+  line-height: 1.55;
+}
+
+/* ===== trend 趋势 ===== */
+.trend-card .trend-headline {
+  font-size: 48px;
+  font-weight: 800;
+  text-align: center;
+  color: #FF6B8A;
+  padding: 28px 20px;
+  line-height: 1.25;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.trend-card .trend-arrow {
+  font-size: 48px;
+  text-align: center;
+  color: #FF6B8A;
+  font-weight: 800;
+  line-height: 1;
+}
+.trend-card .trend-signals {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+}
+.trend-card .trend-signal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.trend-card .trend-signal-num {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #FF6B8A;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trend-card .trend-signal-text {
+  font-size: 24px;
+  color: #333333;
+  line-height: 1.55;
+}
+
+/* ===== comparison 对比 ===== */
+.comparison-card .comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+}
+.comparison-card .comp-col {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.comparison-card .comp-col-header {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FF6B8A;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #F5F0E8;
+}
+.comparison-card .comp-footer {
+  background: #FF6B8A;
+  color: #fff;
+  border-radius: 16px;
+  padding: 20px 28px;
+  font-size: 24px;
+  line-height: 1.55;
+}
+
+/* ===== case 案例 ===== */
+.case-card .case-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1;
+}
+.case-card .case-col {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.case-card .case-col-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FF6B8A;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #F5F0E8;
+}
+.case-card .case-col-item {
+  font-size: 24px;
+  color: #333333;
+  line-height: 1.55;
+  padding-left: 24px;
+  position: relative;
+}
+.case-card .case-col-item::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  color: #FF6B8A;
+  font-weight: 700;
+}
+
+/* ===== conclusion 结论 ===== */
+.conclusion-card .concl-center {
+  text-align: center;
+  padding: 32px 28px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.conclusion-card .concl-message {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FF6B8A;
+  line-height: 1.55;
+}
+.conclusion-card .concl-points {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+}
+.conclusion-card .concl-point {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 18px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.conclusion-card .concl-point-num {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #FF6B8A;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+.conclusion-card .concl-point-text {
+  font-size: 24px;
+  color: #333333;
+  line-height: 1.55;
+}
+.conclusion-card .concl-opportunity {
+  background: #FF6B8A;
+  color: #fff;
+  border-radius: 16px;
+  padding: 20px 28px;
+  font-size: 24px;
+  line-height: 1.55;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="card cover">
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="series-label">趋势解读</div>
+  <div class="main-title">AI Agent 从 Demo 到产品</div>
+  <div class="subtitle">2026年大厂密集发布，行业进入产品验证期</div>
+  <div class="badge">AI产品经理GSuperior · 产品拆解</div>
+</div>
+
+
+
+<div class="card content-card timeline-card">
+  <div class="torn-top"></div>
+  <div class="timeline-list">
+    <div class="timeline-line"></div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">2026年上半年</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">OpenAI</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">Google</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">Anthropic</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">字节跳动等密集发布AI Agent产品</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">OpenAI Operator于2025年10月发布</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">Google Gemini Agent集成Workspace</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">Anthropic Claude支持多步骤任务</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-text">字节Coze提供低代码平台</div>
+    </div>
+  </div>
+  <div class="caption">AI产品经理GSuperior · 产品拆解</div>
+</div>
+
+
+
+<div class="card content-card trend-card">
+  <div class="torn-top"></div>
+  <div class="trend-headline">
+    大厂密集发布意味着Agent从概念验证进入产品验证期，而非概念炒作期。行业共识
+  </div>
+  <div class="trend-arrow">↑</div>
+  <div class="trend-signals">
+    <div class="trend-signal">
+      <div class="trend-signal-num">1</div>
+      <div class="trend-signal-text">Agent是下一轮AI产品化的核心战场</div>
+    </div>
+    <div class="trend-signal">
+      <div class="trend-signal-num">2</div>
+      <div class="trend-signal-text">产品经理窗口期：交互模式和设计范式尚未定型</div>
+    </div>
+  </div>
+  <div class="caption">AI产品经理GSuperior · 产品拆解</div>
+</div>
+
+
+
+<div class="card content-card comparison-card">
+  <div class="torn-top"></div>
+  <div class="comp-grid">
+    <div class="comp-col">
+      <div class="comp-col-header">OpenAI Operator主打通用浏览器Agent</div>
+    </div>
+  </div>
+  <div class="comp-footer">Google Gemini Agent侧重Workspace集成，字节Coze提供低代码平台。策略分歧说明行业尚未形成标准产品范式。</div>
+  <div class="caption">AI产品经理GSuperior · 产品拆解</div>
+</div>
+
+
+
+<div class="card content-card case-card">
+  <div class="torn-top"></div>
+  <div class="case-grid">
+    <div class="case-col">
+      <div class="case-col-title">问题</div>
+      <div class="case-col-item">早期用户反馈Agent产品存在上下文丢失</div>
+      <div class="case-col-item">任务执行不稳定等问题</div>
+    </div>
+    <div class="case-col">
+      <div class="case-col-title">反馈</div>
+      <div class="case-col-item">多步骤任务中频繁需要人工干预</div>
+      <div class="case-col-item">用户预期与实际能力存在差距</div>
+    </div>
+  </div>
+  <div class="caption">AI产品经理GSuperior · 产品拆解</div>
+</div>
+
+
+
+<div class="card content-card conclusion-card">
+  <div class="torn-top"></div>
+  <div class="concl-center">
+    <div class="concl-message">
+      Agent产品化的真正瓶颈是产品设计而非模型能力。核心挑战：任务拆解、状态管理、用户预期管理。大厂策略分化说明行业还在探路，这正是产品经理的机会。
+    </div>
+  </div>
+  <div class="concl-points">
+    <div class="concl-point">
+      <div class="concl-point-num">1</div>
+      <div class="concl-point-text">任务拆解、状态管理、用户预期管理</div>
+    </div>
+    <div class="concl-point">
+      <div class="concl-point-num">2</div>
+      <div class="concl-point-text">大厂策略分化说明行业还在探路</div>
+    </div>
+    <div class="concl-point">
+      <div class="concl-point-num">3</div>
+      <div class="concl-point-text">这正是产品经理的机会</div>
+    </div>
+  </div>
+  <div class="concl-opportunity">PM机会窗口：关注任务拆解模式与渐进式可靠性展示</div>
+  <div class="caption">AI产品经理GSuperior · 产品拆解</div>
+</div>
+
+
+</div>
+</body>
+</html>

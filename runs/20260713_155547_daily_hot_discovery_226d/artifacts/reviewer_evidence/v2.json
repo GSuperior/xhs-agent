@@ -1,0 +1,15 @@
+{
+  "status": "revise",
+  "issue_type": "evidence",
+  "route_to": "researching",
+  "issues": [
+    {
+      "rule_id": "EVIDENCE_001",
+      "location": "evidence_pack",
+      "problem": "所有来源均为模型知识生成，未经实时验证，来源可靠性低，无法确认 claim 是否被真实来源直接支持。",
+      "severity": "major",
+      "suggested_action": "对每个 claim 补充真实、可验证的官方或第三方来源，确认发布事件、时间、具体功能描述等细节。"
+    }
+  ],
+  "severity": "none"
+}

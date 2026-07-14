@@ -1,0 +1,48 @@
+# 小红书 AI 内容卡片 Design Token
+# 唯一真源: 此文件。agent_design.md 不保留副本。
+# 画布: 1080x1440 (3:4)
+
+canvas:
+  width: 1080
+  height: 1440
+  safe_area: 72
+
+font_scale:
+  cover_main: 76
+  cover_subtitle: 34
+  card_heading: 48
+  card_body: 32
+  caption: 24
+  badge: 26
+
+line_height:
+  heading: 1.25
+  body: 1.55
+
+cover_theme:
+  background: "#FFFFFF"
+  foreground: "#000000"
+  accent_source: brand
+
+content_theme:
+  background: "#F5F0E8"
+  foreground: "#333333"
+  accent: "#FF6B8A"
+
+# 卡片配置
+cards:
+  default_count: 6
+  min_count: 5
+  max_count: 8
+  cover_card_id: card_1
+
+# 字数约束 (字符)
+char_limits:
+  post_title: 22
+  cover_main: 30
+  card_min: 40
+  card_max: 100
+  body_min: 400
+  body_max: 700
+  tags_min: 5
+  tags_max: 8

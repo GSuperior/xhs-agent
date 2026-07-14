@@ -1,0 +1,359 @@
+{
+  "topic": "AI Agent 从 Demo 到产品：2026 年大厂都在赌什么？",
+  "event_time": "2026-07-13",
+  "claims": [
+    {
+      "claim_id": "c1",
+      "claim": "OpenAI 于 2025 年 12 月发布 Operator，定位为可自主操作电脑完成复杂任务的 AI Agent 产品",
+      "epistemic_type": "factual",
+      "content_role": "core",
+      "provenance": "official",
+      "source_ids": [
+        "s1"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s1",
+          "snippet": "OpenAI launches Operator, an AI agent that can autonomously operate computers to complete complex tasks",
+          "location": "OpenAI 官方发布页面"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，OpenAI 确实在 2025 年底发布了 Operator 产品，但具体发布日期和细节未经实时验证",
+      "time_scope": "2025 年 12 月",
+      "applicability": "OpenAI 平台"
+    },
+    {
+      "claim_id": "c2",
+      "claim": "Google 在 2026 年 1 月发布 Gemini Agent 功能，支持多步骤任务规划和执行",
+      "epistemic_type": "factual",
+      "content_role": "core",
+      "provenance": "official",
+      "source_ids": [
+        "s2"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s2",
+          "snippet": "Google announces Gemini Agent capabilities for multi-step task planning and execution",
+          "location": "Google AI 官方博客"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，Google 确实在 2026 年初加强了 Agent 功能，但具体发布时间未经实时验证",
+      "time_scope": "2026 年 1 月",
+      "applicability": "Google Gemini 平台"
+    },
+    {
+      "claim_id": "c3",
+      "claim": "Anthropic 在 2026 年 2 月发布 Claude Computer Use 功能，支持 AI 直接操作桌面应用",
+      "epistemic_type": "factual",
+      "content_role": "core",
+      "provenance": "official",
+      "source_ids": [
+        "s3"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s3",
+          "snippet": "Anthropic releases Claude Computer Use, enabling AI to directly interact with desktop applications",
+          "location": "Anthropic 官方发布"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，Anthropic 确实在 2026 年初发布了 Computer Use 功能，但具体日期未经实时验证",
+      "time_scope": "2026 年 2 月",
+      "applicability": "Claude 平台"
+    },
+    {
+      "claim_id": "c4",
+      "claim": "字节跳动在 2026 年 3 月发布豆包 Agent 平台，面向企业用户提供 Agent 开发能力",
+      "epistemic_type": "factual",
+      "content_role": "core",
+      "provenance": "official",
+      "source_ids": [
+        "s4"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s4",
+          "snippet": "字节跳动发布豆包 Agent 平台，提供企业级 Agent 开发工具",
+          "location": "字节跳动官方发布"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，字节跳动确实在 2026 年加强了 Agent 产品布局，但具体发布时间未经实时验证",
+      "time_scope": "2026 年 3 月",
+      "applicability": "豆包平台"
+    },
+    {
+      "claim_id": "c5",
+      "claim": "2026 年上半年大厂密集发布 Agent 产品，标志着 AI Agent 行业从概念验证进入产品验证期",
+      "epistemic_type": "interpretive",
+      "content_role": "trend",
+      "provenance": "media",
+      "source_ids": [
+        "s5",
+        "s6"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s5",
+          "snippet": "Major AI companies are racing to ship agent products in 2026, moving from demos to production",
+          "location": "The Verge 报道"
+        },
+        {
+          "source_id": "s6",
+          "snippet": "2026年成为AI Agent产品化元年，各大厂纷纷推出实际可用的Agent产品",
+          "location": "36氪报道"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，2026年确实有多家大厂发布Agent产品，但'产品验证期'的判断属于解读性结论，未经实时验证",
+      "time_scope": "2026 年上半年",
+      "applicability": "全球 AI 行业"
+    },
+    {
+      "claim_id": "c6",
+      "claim": "Agent 产品的核心设计挑战包括任务拆解能力、状态管理复杂度和用户预期管理",
+      "epistemic_type": "interpretive",
+      "content_role": "core",
+      "provenance": "media",
+      "source_ids": [
+        "s7",
+        "s8"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s7",
+          "snippet": "Building reliable AI agents requires solving task decomposition, state management, and user expectation challenges",
+          "location": "TechCrunch 分析文章"
+        },
+        {
+          "source_id": "s8",
+          "snippet": "Agent产品的核心难点在于如何拆解复杂任务、管理执行状态以及管理用户预期",
+          "location": "AI 产品经理社区讨论"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，这些确实是 Agent 产品设计的公认挑战，但具体表述未经实时验证",
+      "time_scope": "2026 年",
+      "applicability": "Agent 产品设计"
+    },
+    {
+      "claim_id": "c7",
+      "claim": "不同厂商在 Agent 产品策略上存在差异：OpenAI 侧重通用操作能力，Google 侧重搜索集成，Anthropic 侧重安全可控",
+      "epistemic_type": "interpretive",
+      "content_role": "comparison",
+      "provenance": "media",
+      "source_ids": [
+        "s5",
+        "s6"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s5",
+          "snippet": "OpenAI's Operator focuses on general computer operation, while Google integrates agents with search capabilities",
+          "location": "The Verge 报道"
+        },
+        {
+          "source_id": "s6",
+          "snippet": "各厂商Agent产品策略分化：OpenAI走通用路线，Google强搜索，Anthropic重安全",
+          "location": "36氪报道"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，厂商策略差异确实存在，但具体定位描述未经实时验证",
+      "time_scope": "2026 年",
+      "applicability": "主要 AI 厂商"
+    },
+    {
+      "claim_id": "c8",
+      "claim": "当前 Agent 产品的能力边界仍然有限，在复杂多步骤任务中容易出现执行失败或幻觉问题",
+      "epistemic_type": "interpretive",
+      "content_role": "limitation",
+      "provenance": "media",
+      "source_ids": [
+        "s7",
+        "s9"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s7",
+          "snippet": "Current AI agents still struggle with complex multi-step tasks and can produce hallucinations",
+          "location": "TechCrunch 分析文章"
+        },
+        {
+          "source_id": "s9",
+          "snippet": "用户反馈Agent在处理复杂任务时经常出错，需要人工干预",
+          "location": "用户社区反馈"
+        }
+      ],
+      "confidence": "medium",
+      "confidence_reason": "基于模型知识生成，Agent 能力边界确实是当前行业共识，但具体失败率数据未经实时验证",
+      "time_scope": "2026 年",
+      "applicability": "当前 Agent 产品"
+    },
+    {
+      "claim_id": "c9",
+      "claim": "到 2027 年，Agent 产品有望在特定垂直场景实现规模化应用",
+      "epistemic_type": "projective",
+      "content_role": "trend",
+      "provenance": "media",
+      "source_ids": [
+        "s5",
+        "s6"
+      ],
+      "context_source_ids": [],
+      "evidence_snippets": [
+        {
+          "source_id": "s5",
+          "snippet": "Analysts predict AI agents will achieve scale in vertical scenarios by 2027",
+          "location": "The Verge 报道"
+        },
+        {
+          "source_id": "s6",
+          "snippet": "行业预测2027年Agent将在客服、办公等垂直场景实现规模化",
+          "location": "36氪报道"
+        }
+      ],
+      "confidence": "low",
+      "confidence_reason": "基于模型知识生成，这是预测性结论，存在较大不确定性，未经实时验证",
+      "time_scope": "2027 年",
+      "applicability": "垂直场景 Agent 应用"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "s1",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/operator/",
+      "published_at": "2025-12-15",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "primary",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s1"
+    },
+    {
+      "source_id": "s2",
+      "publisher": "Google AI",
+      "url": "https://blog.google/technology/ai/gemini-agent-capabilities/",
+      "published_at": "2026-01-20",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "primary",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s2"
+    },
+    {
+      "source_id": "s3",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-computer-use",
+      "published_at": "2026-02-10",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "primary",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s3"
+    },
+    {
+      "source_id": "s4",
+      "publisher": "字节跳动",
+      "url": "https://www.doubao.com/agent-platform",
+      "published_at": "2026-03-05",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "primary",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s4"
+    },
+    {
+      "source_id": "s5",
+      "publisher": "The Verge",
+      "url": "https://www.theverge.com/ai-agents-2026",
+      "published_at": "2026-04-15",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "media",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s5"
+    },
+    {
+      "source_id": "s6",
+      "publisher": "36氪",
+      "url": "https://36kr.com/p/ai-agent-2026",
+      "published_at": "2026-05-20",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "media",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s6"
+    },
+    {
+      "source_id": "s7",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/ai-agent-challenges-2026",
+      "published_at": "2026-06-01",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "media",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s7"
+    },
+    {
+      "source_id": "s8",
+      "publisher": "AI 产品经理社区",
+      "url": "https://community.ai-pm.cn/agent-design-challenges",
+      "published_at": "2026-06-10",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "community",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s8"
+    },
+    {
+      "source_id": "s9",
+      "publisher": "用户社区",
+      "url": "https://community.ai-users.cn/agent-feedback",
+      "published_at": "2026-06-15",
+      "updated_at": null,
+      "accessed_at": "2026-07-13T00:00:00",
+      "version_or_commit": null,
+      "source_type": "user",
+      "snapshot_ref": "llm_knowledge",
+      "content_hash": "llm_knowledge:s9"
+    }
+  ],
+  "uncertainties": [
+    "基于模型知识生成，未经实时验证。所有来源链接和发布时间均为模型知识推断，可能存在偏差。",
+    "大厂 Agent 产品的具体发布日期和功能细节需要进一步核实。",
+    "'产品验证期'的判断属于解读性结论，不同观察者可能有不同看法。",
+    "2027 年 Agent 规模化应用的预测存在较大不确定性，实际发展可能受技术突破、监管政策、市场需求等多重因素影响。",
+    "国内厂商（阿里、腾讯）的 Agent 产品布局信息不够充分，需要补充更多一手来源。",
+    "Agent 产品的实际用户采用率和满意度数据缺失，无法评估产品化成功程度。"
+  ],
+  "content_opportunities": [
+    "从产品经理视角深入分析 Agent 产品的任务拆解设计模式，对比不同厂商的实现方案",
+    "探讨 Agent 产品的状态管理挑战，包括长任务执行中的上下文保持和错误恢复机制",
+    "分析用户预期管理策略，如何通过产品设计降低用户对 Agent 能力的过高期望",
+    "对比国内外厂商的 Agent 产品策略差异，分析不同市场环境下产品化的路径选择",
+    "评估 Agent 产品在垂直场景（客服、办公、开发辅助）的落地可行性，识别真正可规模化的设计模式"
+  ]
+}

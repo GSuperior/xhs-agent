@@ -1,0 +1,122 @@
+{
+  "template": "product_breakdown",
+  "cards": [
+    {
+      "card_id": "card_1",
+      "template": "cover",
+      "layout": "居中布局，主标题居中，副标题下方，底部装饰性AI图标点缀",
+      "hierarchy": [
+        "series_label",
+        "main_title",
+        "subtitle"
+      ],
+      "emphasis": [
+        "main_title"
+      ],
+      "icon_keys": [
+        "ai",
+        "agent"
+      ]
+    },
+    {
+      "card_id": "card_2",
+      "template": "timeline",
+      "layout": "垂直时间线，左侧时间节点，右侧产品发布信息卡片",
+      "hierarchy": [
+        "card_title",
+        "timeline_items"
+      ],
+      "emphasis": [
+        "timeline_items"
+      ],
+      "icon_keys": [
+        "calendar",
+        "launch",
+        "browser",
+        "workspace",
+        "tool",
+        "platform"
+      ]
+    },
+    {
+      "card_id": "card_3",
+      "template": "trend",
+      "layout": "上标题下趋势箭头图，三个关键信号横向排列",
+      "hierarchy": [
+        "card_title",
+        "trend_diagram",
+        "key_points"
+      ],
+      "emphasis": [
+        "trend_diagram"
+      ],
+      "icon_keys": [
+        "arrow_up",
+        "chart",
+        "signal"
+      ]
+    },
+    {
+      "card_id": "card_4",
+      "template": "comparison",
+      "layout": "三栏对比矩阵，每栏一个厂商策略，底部总结行",
+      "hierarchy": [
+        "card_title",
+        "comparison_matrix",
+        "conclusion_row"
+      ],
+      "emphasis": [
+        "comparison_matrix"
+      ],
+      "icon_keys": [
+        "compare",
+        "strategy",
+        "general",
+        "integration",
+        "lowcode"
+      ]
+    },
+    {
+      "card_id": "card_5",
+      "template": "case",
+      "layout": "问题-反馈框架，左侧问题列表，右侧用户反馈卡片",
+      "hierarchy": [
+        "card_title",
+        "problem_list",
+        "feedback_cards"
+      ],
+      "emphasis": [
+        "feedback_cards"
+      ],
+      "icon_keys": [
+        "warning",
+        "user",
+        "feedback",
+        "gap"
+      ]
+    },
+    {
+      "card_id": "card_6",
+      "template": "conclusion",
+      "layout": "核心观点居中，下方三大挑战横向排列，底部机会窗口提示",
+      "hierarchy": [
+        "card_title",
+        "core_message",
+        "three_challenges",
+        "opportunity_note"
+      ],
+      "emphasis": [
+        "core_message",
+        "three_challenges"
+      ],
+      "icon_keys": [
+        "lightbulb",
+        "target",
+        "task",
+        "state",
+        "expectation"
+      ]
+    }
+  ],
+  "design_token_ref": "config/design_token.json"
+}

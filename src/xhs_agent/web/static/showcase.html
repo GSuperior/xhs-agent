@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XHS Agent · 小红书 AI 内容 Agent</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0E14;
+    --bg-elev: #11141B;
+    --border: #1C1F26;
+    --text: #E5E7EB;
+    --text-dim: #8A8F98;
+    --brand: #5E6AD2;
+    --brand-hover: #7170FF;
+    --pink: #FF6B8A;
+    --success: #26BD6C;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .nav {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    position: sticky; top: 0;
+    background: rgba(11, 14, 20, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+  .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    font-size: 13px; font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text); background: transparent;
+    text-decoration: none;
+    transition: all 150ms ease;
+    cursor: pointer;
+  }
+  .btn:hover { border-color: var(--brand); color: var(--brand-hover); }
+  .btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); color: #fff; }
+  .hero { padding: 96px 0 64px; text-align: center; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 12px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px; color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+  .hero-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+  .hero h1 {
+    font-size: 56px; font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 20px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 0%, #8A8F98 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .accent { background: linear-gradient(135deg, var(--brand) 0%, var(--pink) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { font-size: 18px; color: var(--text-dim); max-width: 640px; margin: 0 auto 32px; line-height: 1.6; }
+  .hero-cta { display: flex; gap: 12px; justify-content: center; }
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    padding: 24px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 64px 0;
+  }
+  .stat-num { font-size: 32px; font-weight: 700; color: var(--brand); }
+  .stat-label { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+  .section { padding: 48px 0; }
+  .section-title { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+  .section-sub { color: var(--text-dim); font-size: 14px; margin: 0 0 32px; }
+  .pipeline {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+    padding: 24px; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 12px;
+  }
+  .pipeline-step {
+    text-align: center; font-size: 11px;
+    padding: 8px 4px;
+    border-radius: 6px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+  .pipeline-step .num { color: var(--brand); font-weight: 700; }
+  .pipeline-step .label { color: var(--text-dim); margin-top: 4px; display: block; }
+  .showcase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .showcase-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 150ms ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .showcase-card:hover { border-color: var(--brand); transform: translateY(-2px); }
+  .showcase-thumb {
+    aspect-ratio: 3/4;
+    background: #F5F0E8;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .showcase-thumb iframe { width: 1080px; height: 1440px; transform: scale(0.27); transform-origin: top left; border: 0; pointer-events: none; }
+  .showcase-meta { padding: 16px; }
+  .showcase-title { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .showcase-desc { font-size: 12px; color: var(--text-dim); margin: 0; }
+  .showcase-badge {
+    display: inline-block; margin-top: 8px;
+    padding: 2px 8px; font-size: 11px;
+    background: rgba(255, 107, 138, 0.12); color: var(--pink);
+    border-radius: 4px;
+  }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature-card {
+    padding: 24px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .feature-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(94, 106, 210, 0.12); color: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+  .feature-title { font-size: 14px; font-weight: 600; margin: 0 0 6px; }
+  .feature-desc { font-size: 12px; color: var(--text-dim); margin: 0; line-height: 1.5; }
+  .footer { padding: 48px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 12px; }
+  .footer a { color: var(--brand); text-decoration: none; }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .stats, .features, .showcase-grid { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="logo"><span class="logo-dot"></span>XHS Agent</div>
+    <div style="display:flex; gap:8px;">
+      <a class="btn" href="https://github.com/your-username/xhs-agent" id="gh-link">GitHub</a>
+      <a class="btn btn-primary" href="#showcase">查看示例</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>14 态主链路 · 多 Agent 协作 · 已上线</div>
+    <h1>小红书 AI 内容 <span class="accent">Agent</span></h1>
+    <p>从选题发现到终稿渲染的产前闭环。6 个 Agent 协作 + 3 层 Reviewer 把关 + Schema 校验下沉，输出可直接发布的小红书图文笔记。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#showcase">查看生成示例 →</a>
+      <a class="btn" href="#pipeline">了解架构</a>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="stats">
+    <div><div class="stat-num">14</div><div class="stat-label">主链路状态</div></div>
+    <div><div class="stat-num">6</div><div class="stat-label">协作 Agent</div></div>
+    <div><div class="stat-num">3</div><div class="stat-label">Reviewer 把关</div></div>
+    <div><div class="stat-num">6</div><div class="stat-label">视觉卡片类型</div></div>
+  </div>
+</div>
+
+<section class="section" id="pipeline">
+  <div class="container">
+    <h2 class="section-title">14 态主链路</h2>
+    <p class="section-sub">每个状态都有明确的输入/输出/质量门禁，确保产出可控</p>
+    <div class="pipeline">
+      <div class="pipeline-step"><span class="num">1</span><span class="label">选题发现</span></div>
+      <div class="pipeline-step"><span class="num">2</span><span class="label">选题确认</span></div>
+      <div class="pipeline-step"><span class="num">3</span><span class="label">研究取证</span></div>
+      <div class="pipeline-step"><span class="num">4</span><span class="label">证据审核</span></div>
+      <div class="pipeline-step"><span class="num">5</span><span class="label">内容规划</span></div>
+      <div class="pipeline-step"><span class="num">6</span><span class="label">大纲确认</span></div>
+      <div class="pipeline-step"><span class="num">7</span><span class="label">文案撰写</span></div>
+      <div class="pipeline-step"><span class="num">8</span><span class="label">内容审核</span></div>
+      <div class="pipeline-step"><span class="num">9</span><span class="label">视觉规划</span></div>
+      <div class="pipeline-step"><span class="num">10</span><span class="label">布局审核</span></div>
+      <div class="pipeline-step"><span class="num">11</span><span class="label">HTML 渲染</span></div>
+      <div class="pipeline-step"><span class="num">12</span><span class="label">渲染校验</span></div>
+      <div class="pipeline-step"><span class="num">13</span><span class="label">终稿确认</span></div>
+      <div class="pipeline-step"><span class="num">14</span><span class="label">完成</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="showcase">
+  <div class="container">
+    <h2 class="section-title">生成示例</h2>
+    <p class="section-sub">点击查看真实 LLM 生成的完整小红书图文笔记（HTML 卡片形态）</p>
+    <div class="showcase-grid">
+      <a class="showcase-card" href="showcase/note_6c89.html" target="_blank">
+        <div class="showcase-thumb"><iframe src="showcase/note_6c89.html" loading="lazy" scrolling="no"></iframe></div>
+        <div class="showcase-meta">
+          <h3 class="showcase-title">AI Agent 任务拆解趋势解读</h3>
+          <p class="showcase-desc">2026-07-13 · 趋势解读栏目 · 6 张卡片</p>
+          <span class="showcase-badge">trend_analysis</span>
+        </div>
+      </a>
+      <a class="showcase-card" href="showcase/note_226d.html" target="_blank">
+        <div class="showcase-thumb"><iframe src="showcase/note_226d.html" loading="lazy" scrolling="no"></iframe></div>
+        <div class="showcase-meta">
+          <h3 class="showcase-title">大厂 Agent 产品对比</h3>
+          <p class="showcase-desc">2026-07-13 · 产品拆解栏目 · 6 张卡片</p>
+          <span class="showcase-badge">product_breakdown</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">核心能力</h2>
+    <p class="section-sub">三层质量门禁 + 多 Agent 分工 + 可视化渲染</p>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">1</div>
+        <h3 class="feature-title">6 Agent 分工协作</h3>
+        <p class="feature-desc">DiscoveryAgent 选题 / ResearchAgent 取证 / PlanningAgent 规划 / WritingAgent 撰写 / VisualAgent 视觉 / ReviewerAgent 审核，各司其职</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">2</div>
+        <h3 class="feature-title">3 层 Reviewer 把关</h3>
+        <p class="feature-desc">evidence 模式审证据真实性 · content 模式审文案质量 · layout 模式审视觉布局，REVISE 自动返工</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">3</div>
+        <h3 class="feature-title">6 种视觉卡片</h3>
+        <p class="feature-desc">cover 封面 / timeline 时间线 / trend 趋势 / comparison 对比 / case 案例 / conclusion 结论，按 layout_spec 分发</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">4</div>
+        <h3 class="feature-title">Schema 校验下沉</h3>
+        <p class="feature-desc">可程序化软规则（字数/标签数/标题候选数）从 LLM Reviewer 下沉到 SchemaValidator，减少 token 消耗</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">5</div>
+        <h3 class="feature-title">证据可追溯</h3>
+        <p class="feature-desc">每个 external_claim / mixed 类型的 block 都必须有 claim_refs，引用 EvidencePack 中的 claim_id</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">6</div>
+        <h3 class="feature-title">Web 端可视化</h3>
+        <p class="feature-desc">FastAPI + Tailwind 实现 Linear 风格暗夜界面，14 态进度条 + iframe 预览 + 决策日志</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">本地运行</h2>
+    <p class="section-sub">克隆仓库后按以下步骤启动</p>
+    <pre style="background:var(--bg-elev); border:1px solid var(--border); border-radius:12px; padding:24px; overflow-x:auto; font-size:13px; line-height:1.7; color:var(--text); margin:0;"><code><span style="color:var(--text-dim);"># 1. 安装依赖</span>
+pip install -r requirements.txt
+pip install fastapi uvicorn
+
+<span style="color:var(--text-dim);"># 2. 配置环境变量</span>
+cp .env.example .env
+<span style="color:var(--text-dim);"># 编辑 .env 填入 SENSENOVA_API_KEY</span>
+
+<span style="color:var(--text-dim);"># 3a. 启动 CLI 模式</span>
+python -m xhs_agent daily
+
+<span style="color:var(--text-dim);"># 3b. 启动 Web 模式（推荐）</span>
+cd src && python -m xhs_agent web
+<span style="color:var(--text-dim);"># → http://localhost:8000</span></code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>XHS Agent · 小红书 AI 内容 Agent · 多 Agent 协作 + 14 态主链路</p>
+    <p style="margin-top:8px;">设计参考 <a href="https://github.com/VoltAgent/awesome-design-md" target="_blank">Linear DESIGN.md</a> · 基于 SenseNova LLM</p>
+  </div>
+</footer>
+
+</body>
+</html>

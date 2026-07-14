@@ -1,0 +1,100 @@
+{
+  "post_title_candidates": [
+    {
+      "text": "AI Agent 产品化深水区",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c5",
+        "c7"
+      ]
+    }
+  ],
+  "cover": {
+    "card_id": "card_1",
+    "series_label": "趋势解读",
+    "main_title": "AI Agent 从 Demo 到产品",
+    "subtitle": {
+      "text": "2026年大厂密集发布，行业进入产品验证期",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c5",
+        "c7"
+      ],
+      "supporting_claim_refs": []
+    }
+  },
+  "blocks": [
+    {
+      "block_id": "b1",
+      "surface": "card",
+      "card_id": "card_2",
+      "text": "2026年上半年，OpenAI、Google、Anthropic、字节跳动等密集发布AI Agent产品。OpenAI Operator于2025年10月发布，Google Gemini Agent集成Workspace，Anthropic Claude支持多步骤任务，字节Coze提供低代码平台。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b2",
+      "surface": "card",
+      "card_id": "card_3",
+      "text": "大厂密集发布意味着Agent从概念验证进入产品验证期，而非概念炒作期。行业共识：Agent是下一轮AI产品化的核心战场。产品经理窗口期：交互模式和设计范式尚未定型。",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c5",
+        "c7"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b3",
+      "surface": "card",
+      "card_id": "card_4",
+      "text": "厂商策略分化：OpenAI Operator主打通用浏览器Agent，Google Gemini Agent侧重Workspace集成，字节Coze提供低代码平台。策略分歧说明行业尚未形成标准产品范式。",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c8"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b4",
+      "surface": "card",
+      "card_id": "card_5",
+      "text": "早期用户反馈Agent产品存在上下文丢失、任务执行不稳定等问题。多步骤任务中频繁需要人工干预，用户预期与实际能力存在差距。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c9"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b5",
+      "surface": "card",
+      "card_id": "card_6",
+      "text": "Agent产品化的真正瓶颈是产品设计而非模型能力。核心挑战：任务拆解、状态管理、用户预期管理。大厂策略分化说明行业还在探路，这正是产品经理的机会。",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c6",
+        "c8",
+        "c9"
+      ]
+    }
+  ],
+  "body_text": "2026年上半年，AI Agent 产品密集发布。OpenAI 于 2025 年 10 月推出 Operator，这是首个面向消费者的通用浏览器 Agent，能自主操作电脑完成任务。Google 在 2026 年推出 Gemini Agent，深度集成 Workspace，侧重企业工作流自动化。Anthropic Claude 支持多步骤任务规划和工具调用。字节跳动的 Coze 平台则提供低代码方案，让用户自建 Agent。\n\n这些密集发布不是巧合。行业共识认为，Agent 是下一轮 AI 产品化的核心战场。大厂从概念验证转向产品落地，意味着行业进入产品验证期，而非概念炒作期。\n\n但用户反馈显示，早期 Agent 产品仍存在上下文丢失、任务执行不稳定等问题。多步骤任务中频繁需要人工干预，用户预期与实际能力存在差距。\n\n从产品经理视角看，Agent 产品化的真正瓶颈不是模型能力，而是产品设计层面的三大挑战：任务拆解（如何把复杂任务拆成可执行步骤）、状态管理（如何保持上下文不丢失）、用户预期管理（如何不吹牛）。\n\n大厂策略分化——通用 Agent、工作流集成、低代码平台——说明行业尚未形成标准范式。这正是产品经理的机会窗口：定义可规模化的交互模式。\n\n当前证据基于 2026 年上半年公开信息和用户社区反馈，置信度中等。趋势判断存在不确定性，但产品验证期的信号是明确的。",
+  "tags": [
+    "#AI产品经理",
+    "#AI产品",
+    "#AI Agent",
+    "#产品拆解",
+    "#互联网职场",
+    "#产品经理",
+    "#2026趋势"
+  ]
+}

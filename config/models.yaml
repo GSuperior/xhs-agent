@@ -1,0 +1,33 @@
+# 模型配置 - SenseNova (OpenAI兼容, 公测免费)
+# base_url: https://token.sensenova.cn/v1
+
+models:
+  topic: default_model
+  research: default_model
+  planning: strong_model
+  writing: default_model
+  visual_planning: default_model
+  review: strong_model
+  intent_classifier: default_model
+
+model_endpoints:
+  default_model:
+    provider: sensenova
+    model: sensenova-6.7-flash-lite
+    base_url: ${SENSENOVA_BASE_URL}
+    api_key: ${SENSENOVA_API_KEY}
+    temperature: 0.7
+    max_tokens: 4096
+  strong_model:
+    provider: sensenova
+    model: deepseek-v4-flash
+    base_url: ${SENSENOVA_BASE_URL}
+    api_key: ${SENSENOVA_API_KEY}
+    temperature: 0.3
+    max_tokens: 4096
+    reasoning_effort: medium
+
+# Phase 1A 支持的内容类型
+supported_content_types:
+  - product_breakdown
+  - trend_analysis

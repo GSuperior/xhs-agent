@@ -1,0 +1,113 @@
+{
+  "editorial_thesis": {
+    "statement": "2026年大厂Agent产品从Demo进入产品验证期，但任务拆解、状态管理和用户预期管理三大设计挑战仍制约规模化，厂商策略分化（通用/生态/安全）意味着不同路径的试错。",
+    "supporting_claim_refs": [
+      "c5",
+      "c6",
+      "c7"
+    ],
+    "certainty": "medium"
+  },
+  "cards": [
+    {
+      "card_id": "card_1",
+      "purpose": "封面",
+      "key_message": "AI Agent 2026：大厂都在赌什么？从Demo到产品的关键转折",
+      "key_points": [
+        "2026上半年大厂密集发布Agent产品",
+        "行业进入产品验证期，核心挑战待解"
+      ],
+      "claim_refs": [],
+      "thesis_ref": null,
+      "visual_type": "cover",
+      "max_chars": 30
+    },
+    {
+      "card_id": "card_2",
+      "purpose": "发生了什么",
+      "key_message": "2026年上半年，OpenAI、Google、Anthropic、字节、阿里、腾讯密集发布Agent产品",
+      "key_points": [
+        "OpenAI发布Operator Agent，支持自主执行复杂任务",
+        "Google推出Gemini Agent，集成Workspace生态",
+        "Anthropic发布Claude Agent，强调安全可控",
+        "国内字节（豆包）、阿里（通义）、腾讯（元宝）加速布局Agent平台"
+      ],
+      "claim_refs": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "thesis_ref": null,
+      "visual_type": "timeline",
+      "max_chars": 80
+    },
+    {
+      "card_id": "card_3",
+      "purpose": "为什么值得关注",
+      "key_message": "Agent是2026年AI产品化的核心战场，大厂密集发布意味着行业从概念验证进入产品验证期",
+      "key_points": [
+        "行业进入产品验证阶段，不再是Demo演示",
+        "Agent产品化是2026年最重要的AI趋势之一",
+        "产品设计挑战（任务拆解、状态管理、预期管理）成为焦点"
+      ],
+      "claim_refs": [
+        "c5",
+        "c6"
+      ],
+      "thesis_ref": null,
+      "visual_type": "trend",
+      "max_chars": 80
+    },
+    {
+      "card_id": "card_4",
+      "purpose": "核心机制与策略对比",
+      "key_message": "不同厂商Agent产品策略分化：OpenAI通用、Google生态、Anthropic安全，但面临共同的设计挑战",
+      "key_points": [
+        "OpenAI Operator追求通用任务执行能力",
+        "Google Gemini Agent深度集成Workspace生态",
+        "Anthropic Claude Agent强调安全可控",
+        "共同挑战：任务拆解准确性、状态一致性、用户预期管理"
+      ],
+      "claim_refs": [
+        "c7",
+        "c6"
+      ],
+      "thesis_ref": null,
+      "visual_type": "comparison",
+      "max_chars": 100
+    },
+    {
+      "card_id": "card_5",
+      "purpose": "用户场景与能力边界",
+      "key_message": "当前Agent产品在复杂多步骤任务中成功率不稳定，长上下文记忆有限，工具调用可靠性待提升",
+      "key_points": [
+        "复杂多步骤任务经常出错，需要人工干预",
+        "长上下文记忆能力有限，影响连续任务执行",
+        "工具调用可靠性不足，距离完全自主还有差距",
+        "典型场景：自动化办公、数据整理、流程审批"
+      ],
+      "claim_refs": [
+        "c8"
+      ],
+      "thesis_ref": null,
+      "visual_type": "case_study",
+      "max_chars": 100
+    },
+    {
+      "card_id": "card_6",
+      "purpose": "PM判断",
+      "key_message": "从产品经理视角看，Agent产品规模化取决于三大设计挑战的突破，厂商策略分化意味着不同试错路径",
+      "key_points": [
+        "任务拆解：需要更精细的意图识别与步骤规划",
+        "状态管理：多步骤一致性是用户体验的关键瓶颈",
+        "用户预期管理：避免过度承诺，引导合理使用",
+        "通用型、生态型、安全型三种路径，暂无定论"
+      ],
+      "claim_refs": [],
+      "thesis_ref": "editorial_thesis",
+      "visual_type": "conclusion",
+      "max_chars": 100
+    }
+  ]
+}

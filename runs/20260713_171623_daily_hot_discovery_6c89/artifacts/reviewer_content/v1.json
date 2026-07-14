@@ -1,0 +1,29 @@
+{
+  "status": "revise",
+  "issue_type": null,
+  "route_to": "drafting",
+  "issues": [
+    {
+      "rule_id": "CONTENT_001",
+      "location": "body_text 第一段、第二段",
+      "problem": "正文中多次出现“四家”一词（如“看了上面四家打法”“四家产品都没给好答案”），但证据包仅包含OpenAI、Google、Anthropic三家大厂，未提及第四家，构成证据包外的新事实且无来源支持。",
+      "severity": "major",
+      "suggested_action": "将“四家”统一改为“三家”或“各大厂”，确保与evidence pack一致。"
+    },
+    {
+      "rule_id": "CONTENT_001",
+      "location": "post_title_candidates[2]",
+      "problem": "标题候选“2026上半年4家大厂Agent产品，我挑出3个设计差异”中的“4家大厂”与证据包实际三家不符，构成新事实错误。",
+      "severity": "major",
+      "suggested_action": "修改为“2026上半年3家大厂Agent产品，我挑出3个设计差异”或直接删除该候选标题，避免误导。"
+    },
+    {
+      "rule_id": "CONTENT_005",
+      "location": "cover 主标题及正文首次出现“Agent”处",
+      "problem": "技术术语“Agent”首次出现时未用人话解释其核心含义（如“自主执行任务的AI程序”），可能对非技术读者造成理解门槛。",
+      "severity": "minor",
+      "suggested_action": "在cover副标题或正文第一处术语旁加括号解释，例如“AI Agent（能自主规划并执行多步骤任务的AI程序）”。"
+    }
+  ],
+  "severity": "none"
+}

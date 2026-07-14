@@ -1,0 +1,146 @@
+{
+  "post_title_candidates": [
+    {
+      "text": "AI Agent：大厂赌什么",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c5"
+      ]
+    }
+  ],
+  "cover": {
+    "card_id": "card_1",
+    "series_label": "趋势解读",
+    "main_title": "AI Agent 2026",
+    "subtitle": {
+      "text": "大厂密集发布 Agent 产品，行业进入产品验证期",
+      "statement_type": "mixed",
+      "claim_refs": [
+        "c5"
+      ],
+      "supporting_claim_refs": []
+    }
+  },
+  "blocks": [
+    {
+      "block_id": "b1",
+      "surface": "body",
+      "card_id": null,
+      "text": "2026 年上半年，OpenAI 发布 Operator Agent，Google 推出 Gemini Agent 集成 Workspace 生态，Anthropic 发布 Claude Agent 强调安全可控。国内字节、阿里、腾讯也在加速布局 Agent 平台。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b2",
+      "surface": "card",
+      "card_id": "card_2",
+      "text": "2026 上半年大厂密集发布 Agent 产品：OpenAI Operator、Google Gemini Agent、Anthropic Claude Agent，国内字节、阿里、腾讯同步加速布局",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b3",
+      "surface": "body",
+      "card_id": null,
+      "text": "这不是 Demo 演示，而是产品验证。Agent 是 2026 年 AI 产品化的核心战场，大厂密集发布意味着行业从概念验证进入产品验证期。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c5"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b4",
+      "surface": "card",
+      "card_id": "card_3",
+      "text": "Agent 是 2026 年 AI 产品化核心战场，大厂密集发布意味着行业进入产品验证期，不再是 Demo 演示",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c5"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b5",
+      "surface": "body",
+      "card_id": null,
+      "text": "但产品化面临三大设计挑战：任务拆解的准确性、多步骤状态的一致性管理、用户预期的合理引导。不同厂商策略分化——OpenAI 追求通用性，Google 强调生态集成，Anthropic 强调安全性。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c6",
+        "c7"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b6",
+      "surface": "card",
+      "card_id": "card_4",
+      "text": "厂商策略分化：OpenAI 通用型、Google 生态型、Anthropic 安全型，但共同面临任务拆解、状态管理、用户预期管理三大设计挑战",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c6",
+        "c7"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b7",
+      "surface": "body",
+      "card_id": null,
+      "text": "当前能力边界仍需正视：复杂多步骤任务成功率不稳定，长上下文记忆有限，工具调用可靠性待提升。用户反馈显示，Agent 在复杂任务中经常出错，需要人工干预。",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c8"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b8",
+      "surface": "card",
+      "card_id": "card_5",
+      "text": "当前 Agent 能力边界：复杂多步骤任务成功率不稳定，长上下文记忆有限，工具调用可靠性待提升，距离完全自主还有差距",
+      "statement_type": "external_claim",
+      "claim_refs": [
+        "c8"
+      ],
+      "supporting_claim_refs": []
+    },
+    {
+      "block_id": "b9",
+      "surface": "body",
+      "card_id": null,
+      "text": "从产品经理视角看，Agent 产品规模化取决于三大设计挑战的突破。通用型、生态型、安全型三种路径，目前暂无定论。2026 年下半年的产品迭代和用户反馈，将决定哪条路径真正可规模化。",
+      "statement_type": "creator_opinion",
+      "claim_refs": [],
+      "supporting_claim_refs": [
+        "c6",
+        "c7",
+        "c8"
+      ]
+    }
+  ],
+  "body_text": "2026 年上半年，AI Agent 产品密集发布。OpenAI 在 3 月推出 Operator Agent，支持自主执行复杂任务；Google 发布 Gemini Agent，深度集成 Workspace 生态；Anthropic 推出 Claude Agent，强调安全可控。国内方面，字节跳动的豆包、阿里巴巴的通义、腾讯的元宝也在加速布局 Agent 平台。\n\n这不是 Demo 演示，而是产品验证。Agent 是 2026 年 AI 产品化的核心战场，大厂密集发布意味着行业从概念验证进入产品验证期。对产品经理和 AI 从业者来说，这意味着什么？\n\n产品化面临三大设计挑战：任务拆解的准确性、多步骤状态的一致性管理、用户预期的合理引导。不同厂商策略分化明显——OpenAI 追求通用任务执行能力，Google 强调生态集成，Anthropic 强调安全可控。但无论哪种路径，都面临同样的核心问题。\n\n当前能力边界仍需正视。用户反馈显示，Agent 在复杂多步骤任务中经常出错，成功率不稳定，需要人工干预。长上下文记忆能力有限，工具调用可靠性待提升，距离完全自主执行还有差距。\n\n从产品经理视角看，Agent 产品规模化取决于三大设计挑战的突破。通用型、生态型、安全型三种路径，目前暂无定论。2026 年下半年的产品迭代和用户反馈，将决定哪条路径真正可规模化。我的判断是：生态型路径可能更快落地，但通用型路径的天花板更高。置信度中等，需要更多产品数据验证。",
+  "tags": [
+    "#AI产品经理",
+    "#AI产品",
+    "#Agent",
+    "#AI产品化",
+    "#产品经理",
+    "#互联网职场",
+    "#2026AI趋势"
+  ]
+}

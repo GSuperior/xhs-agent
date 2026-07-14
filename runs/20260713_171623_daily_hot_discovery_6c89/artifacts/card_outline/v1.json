@@ -1,0 +1,110 @@
+{
+  "editorial_thesis": {
+    "statement": "2026年AI Agent产品密集发布不是简单的功能升级，而是AI产品从'问答工具'到'执行平台'的代际跃迁，这要求PM从功能设计思维转向流程编排思维。",
+    "supporting_claim_refs": [
+      "c1",
+      "c2",
+      "c4"
+    ],
+    "certainty": "medium"
+  },
+  "cards": [
+    {
+      "card_id": "card_1",
+      "purpose": "封面",
+      "key_message": "AI Agent产品化元年：从问答到执行的产品跃迁",
+      "key_points": [
+        "2026年大厂集体抢Agent赛道",
+        "产品形态从Chatbot转向任务自动化平台"
+      ],
+      "claim_refs": [
+        "c1",
+        "c4"
+      ],
+      "thesis_ref": null,
+      "visual_type": "cover",
+      "max_chars": 30
+    },
+    {
+      "card_id": "card_2",
+      "purpose": "发生了什么",
+      "key_message": "OpenAI、Google、Anthropic在2026年上半年密集发布Agent产品",
+      "key_points": [
+        "OpenAI的Operator：自主浏览网页、完成多步骤任务",
+        "Google Gemini Agent：跨应用任务自动化",
+        "Anthropic Claude Agent：安全可控的自主执行"
+      ],
+      "claim_refs": [
+        "c1"
+      ],
+      "thesis_ref": null,
+      "visual_type": "timeline",
+      "max_chars": 100
+    },
+    {
+      "card_id": "card_3",
+      "purpose": "为什么值得关注",
+      "key_message": "Agent标志着AI从辅助工具向自主执行平台的范式转变",
+      "key_points": [
+        "不再只是回答问题，而是真正替用户完成任务",
+        "2026年被视为AI Agent产品化元年",
+        "大厂集体押注，赛道确定性极高"
+      ],
+      "claim_refs": [
+        "c1",
+        "c4"
+      ],
+      "thesis_ref": null,
+      "visual_type": "comparison",
+      "max_chars": 80
+    },
+    {
+      "card_id": "card_4",
+      "purpose": "核心机制",
+      "key_message": "Agent与Chatbot的本质差异：从问答到执行的产品形态跃迁",
+      "key_points": [
+        "传统AI工具：被动回答问题，单次交互",
+        "AI Agent：主动规划任务，多步执行，调用工具",
+        "核心能力：任务流程设计、工具编排、安全边界设定"
+      ],
+      "claim_refs": [
+        "c2",
+        "c4"
+      ],
+      "thesis_ref": null,
+      "visual_type": "comparison",
+      "max_chars": 100
+    },
+    {
+      "card_id": "card_5",
+      "purpose": "用户场景",
+      "key_message": "Agent产品覆盖从个人助理到企业自动化的多种场景",
+      "key_points": [
+        "个人场景：预订行程、自动整理邮件、比价购物",
+        "企业场景：自动生成周报、跨系统数据同步、客户工单响应",
+        "用户从'提问者'变成'任务发起者'"
+      ],
+      "claim_refs": [
+        "c1",
+        "c2"
+      ],
+      "thesis_ref": null,
+      "visual_type": "case",
+      "max_chars": 80
+    },
+    {
+      "card_id": "card_6",
+      "purpose": "PM判断",
+      "key_message": "Agent时代PM需要从功能设计思维转向流程编排思维",
+      "key_points": [
+        "核心能力变化：工具编排、安全边界设定、任务可靠性设计",
+        "当前Agent产品仍处于早期，可靠性和安全性是最大挑战",
+        "具备Agent设计能力的PM将成为未来2年的稀缺人才"
+      ],
+      "claim_refs": [],
+      "thesis_ref": "editorial_thesis",
+      "visual_type": "conclusion",
+      "max_chars": 100
+    }
+  ]
+}

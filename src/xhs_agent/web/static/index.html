@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>XHS Agent — 小红书 AI 内容产前闭环</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class', strategy: 'class' };
+</script>
+<style>
+  :root {
+    --bg: #0B0E14;
+    --bg-elev: #11141B;
+    --bg-elev2: #161A22;
+    --border: #1C1F26;
+    --border-strong: #2A2E38;
+    --text: #E5E7EB;
+    --text-dim: #8A8F98;
+    --text-faint: #5C616B;
+    --brand: #5E6AD2;
+    --brand-hover: #7170FF;
+    --brand-dim: #3D45A0;
+    --pink: #FF6B8A;
+    --pink-hover: #FF8AA3;
+    --success: #26BD6C;
+    --warn: #F2C94C;
+    --error: #EB5757;
+    --shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  html.light {
+    --bg: #F7F8F8;
+    --bg-elev: #FFFFFF;
+    --bg-elev2: #F1F2F4;
+    --border: #E5E7EB;
+    --border-strong: #D1D5DB;
+    --text: #0B0E14;
+    --text-dim: #6B7280;
+    --text-faint: #9CA3AF;
+    --shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 500;
+    border: 1px solid transparent; cursor: pointer;
+    transition: all 150ms ease; white-space: nowrap; line-height: 1.2;
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+  .btn-pink { background: var(--pink); color: #fff; }
+  .btn-pink:hover:not(:disabled) { background: var(--pink-hover); }
+  .btn-secondary {
+    background: transparent; color: var(--text); border-color: var(--border-strong);
+  }
+  .btn-secondary:hover:not(:disabled) { background: var(--bg-elev2); border-color: var(--text-faint); }
+  .btn-danger { background: transparent; color: var(--error); border-color: var(--error); }
+  .btn-danger:hover:not(:disabled) { background: rgba(235,87,87,0.12); }
+  .btn-ghost { background: transparent; color: var(--text-dim); padding: 4px 8px; }
+  .btn-ghost:hover:not(:disabled) { color: var(--text); background: var(--bg-elev2); }
+
+  .card {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; transition: all 150ms ease;
+  }
+  .card-hover:hover { border-color: var(--brand); background: var(--bg-elev2); }
+
+  .input {
+    background: var(--bg-elev2); border: 1px solid var(--border-strong); border-radius: 4px;
+    padding: 8px 12px; color: var(--text); font-size: 13px; width: 100%;
+    transition: border-color 150ms ease; outline: none;
+  }
+  .input:focus { border-color: var(--brand); }
+  textarea.input { resize: vertical; min-height: 72px; font-family: inherit; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--border-strong);
+  }
+  .badge-brand { color: var(--brand); border-color: var(--brand-dim); background: rgba(94,106,210,0.12); }
+  .badge-pink { color: var(--pink); border-color: rgba(255,107,138,0.4); background: rgba(255,107,138,0.12); }
+  .badge-success { color: var(--success); border-color: rgba(38,189,108,0.4); background: rgba(38,189,108,0.12); }
+  .badge-warn { color: var(--warn); border-color: rgba(242,201,76,0.4); background: rgba(242,201,76,0.12); }
+  .badge-error { color: var(--error); border-color: rgba(235,87,87,0.4); background: rgba(235,87,87,0.12); }
+  .badge-dim { color: var(--text-dim); }
+
+  /* 进度条 */
+  .progress-wrap { display: flex; align-items: flex-start; gap: 0; width: 100%; }
+  .progress-step {
+    display: flex; flex-direction: column; align-items: center; flex: 1;
+    min-width: 0; position: relative;
+  }
+  .progress-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; border: 1px solid var(--border-strong);
+    background: var(--bg-elev2); color: var(--text-faint);
+    transition: all 200ms ease; z-index: 2; position: relative;
+  }
+  .progress-line {
+    position: absolute; top: 10px; left: 50%; width: 100%; height: 2px;
+    background: var(--border-strong); z-index: 1;
+  }
+  .progress-step:last-child .progress-line { display: none; }
+  .progress-step.done .progress-dot {
+    background: var(--success); border-color: var(--success); color: #fff;
+  }
+  .progress-step.current .progress-dot {
+    background: var(--brand); border-color: var(--brand); color: #fff;
+    animation: pulse 1.8s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(94,106,210,0.6);
+  }
+  .progress-step.failed .progress-dot {
+    background: var(--error); border-color: var(--error); color: #fff;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(94,106,210,0.55); }
+    70% { box-shadow: 0 0 0 8px rgba(94,106,210,0); }
+    100% { box-shadow: 0 0 0 0 rgba(94,106,210,0); }
+  }
+  .progress-label {
+    margin-top: 6px; font-size: 10px; color: var(--text-faint); text-align: center;
+    line-height: 1.2; max-width: 72px; word-break: keep-all;
+  }
+  .progress-step.current .progress-label { color: var(--brand); font-weight: 600; }
+  .progress-step.done .progress-label { color: var(--text-dim); }
+  .progress-step.failed .progress-label { color: var(--error); font-weight: 600; }
+
+  /* toast */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .toast-item {
+    background: var(--bg-elev); border: 1px solid var(--border-strong);
+    border-radius: 8px; padding: 10px 14px; font-size: 13px;
+    box-shadow: var(--shadow); max-width: 360px; animation: slideIn 150ms ease;
+  }
+  .toast-item.error { border-color: var(--error); color: var(--error); }
+  .toast-item.success { border-color: var(--success); color: var(--success); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .run-item {
+    display: flex; flex-direction: column; gap: 2px; padding: 8px 10px;
+    border-radius: 6px; cursor: pointer; transition: background 150ms ease;
+    border: 1px solid transparent;
+  }
+  .run-item:hover { background: var(--bg-elev2); }
+  .run-item.active { background: var(--bg-elev2); border-color: var(--brand); }
+  .run-item .run-title { font-size: 13px; color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .run-item .run-meta { font-size: 11px; color: var(--text-faint); display: flex; gap: 6px; align-items: center; }
+
+  .spinner {
+    width: 12px; height: 12px; border: 2px solid var(--border-strong);
+    border-top-color: var(--brand); border-radius: 50%;
+    animation: spin 0.7s linear infinite; display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .pulse-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--success);
+    display: inline-block; animation: blink 1.4s ease infinite;
+  }
+  @keyframes blink { 50% { opacity: 0.3; } }
+
+  .table-row { display: grid; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .table-row:last-child { border-bottom: none; }
+
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .fade-in { animation: fadeIn 150ms ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+<!-- TopBar -->
+<header class="flex items-center justify-between px-4 h-12 border-b shrink-0" style="border-color: var(--border); background: var(--bg-elev);">
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded flex items-center justify-center font-bold text-white text-xs" style="background: linear-gradient(135deg, var(--brand), var(--pink));">X</div>
+      <span class="font-bold text-[15px]">XHS Agent</span>
+      <span class="badge badge-dim">小红书 AI 内容产前闭环</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="themeToggle" class="btn btn-ghost" title="切换主题">
+      <span id="themeIcon">🌙</span>
+    </button>
+    <a href="https://github.com/linear/linear" target="_blank" rel="noopener" class="btn btn-ghost" title="设计参考">文档</a>
+  </div>
+</header>
+
+<!-- Main 3 columns -->
+<div class="flex-1 flex overflow-hidden">
+
+  <!-- Left: runs list -->
+  <aside class="w-64 shrink-0 border-r flex flex-col" style="border-color: var(--border); background: var(--bg-elev);">
+    <div class="p-3 flex items-center justify-between gap-2">
+      <span class="text-xs font-semibold uppercase tracking-wide" style="color: var(--text-dim);">Runs</span>
+      <div class="flex gap-1">
+        <button id="refreshRuns" class="btn btn-ghost" title="刷新">↻</button>
+        <button id="dailyBtn" class="btn btn-primary" title="启动每日热点发现">+ Daily</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div id="runsList" class="flex-1 overflow-y-auto px-2 pb-3 flex flex-col gap-1">
+      <div class="text-xs px-2 py-8 text-center" style="color: var(--text-faint);">加载中…</div>
+    </div>
+  </aside>
+
+  <!-- Middle: main content -->
+  <main class="flex-1 flex flex-col overflow-hidden" style="background: var(--bg);">
+    <div id="middleScroll" class="flex-1 overflow-y-auto px-6 py-5">
+      <!-- Empty state -->
+      <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center gap-4" style="color: var(--text-faint);">
+        <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl" style="background: var(--bg-elev2); border: 1px solid var(--border);">📝</div>
+        <div>
+          <div class="text-base font-medium" style="color: var(--text-dim);">点击左侧 <span style="color: var(--brand);">+ Daily</span> 启动新流程</div>
+          <div class="text-xs mt-1">从每日热点发现开始，走完 14 态产前闭环</div>
+        </div>
+      </div>
+      <div id="runDetail" class="hidden flex flex-col gap-5"></div>
+    </div>
+  </main>
+
+  <!-- Right: preview / log -->
+  <aside class="w-[420px] shrink-0 border-l flex flex-col" style="border-color: var(--border); background: var(--bg-elev);">
+    <div class="flex items-center justify-between p-3 border-b" style="border-color: var(--border);">
+      <div class="flex items-center gap-2">
+        <button id="tabPreview" class="btn btn-secondary text-xs" data-tab="preview">预览</button>
+        <button id="tabLog" class="btn btn-ghost text-xs" data-tab="log">日志</button>
+      </div>
+      <button id="refreshPreview" class="btn btn-ghost" title="刷新预览">↻</button>
+    </div>
+    <div id="previewPane" class="flex-1 overflow-hidden flex flex-col">
+      <div class="flex-1 p-3 overflow-auto" style="background: var(--bg);">
+        <div class="text-xs h-full flex items-center justify-center" style="color: var(--text-faint);">选择一个 run 查看终稿预览</div>
+      </div>
+    </div>
+    <div id="logPane" class="hidden flex-1 overflow-hidden flex-col">
+      <div id="logList" class="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- toast -->
+<div id="toast"></div>
+
+<!-- Revise modal -->
+<div id="reviseModal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center" style="background: rgba(0,0,0,0.5);">
+  <div class="card w-[440px] flex flex-col gap-3" style="background: var(--bg-elev);">
+    <div>
+      <div class="font-semibold text-base" id="reviseTitle">重新生成</div>
+      <div class="text-xs mt-1" style="color: var(--text-dim);" id="reviseHint">输入修改指令</div>
+    </div>
+    <textarea id="reviseInput" class="input" placeholder="例如：第3页太技术化，请更通俗"></textarea>
+    <div class="flex justify-end gap-2">
+      <button id="reviseCancel" class="btn btn-secondary">取消</button>
+      <button id="reviseSubmit" class="btn btn-primary">提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================================
+// State
+// =========================================================================
+const API = '';
+const POLL_INTERVAL = 2000;
+let stateOrder = [];
+let stateLabels = {};
+let current = { runId: null, runState: null, pollTimer: null, rightTab: 'preview' };
+
+// =========================================================================
+// Utils
+// =========================================================================
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtState(s) { return stateLabels[s] || s; }
+
+function toast(msg, type) {
+  const el = document.createElement('div');
+  el.className = 'toast-item ' + (type || '');
+  el.textContent = msg;
+  $('toast').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 200); }, 3600);
+}
+
+async function api(path, opts) {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if (!res.ok) {
+    let detail = `${res.status}`;
+    try { const j = await res.json(); detail = j.detail || JSON.stringify(j); } catch { try { detail = await res.text(); } catch {} }
+    throw new Error(detail);
+  }
+  const ct = res.headers.get('content-type') || '';
+  if (ct.includes('application/json')) return res.json();
+  return res.text();
+}
+
+// =========================================================================
+// Theme
+// =========================================================================
+function applyTheme(t) {
+  document.documentElement.classList.toggle('light', t === 'light');
+  document.documentElement.classList.toggle('dark', t !== 'light');
+  $('themeIcon').textContent = t === 'light' ? '☀️' : '🌙';
+  localStorage.setItem('xhs-theme', t);
+}
+$('themeToggle').addEventListener('click', () => {
+  const t = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+  applyTheme(t);
+});
+applyTheme(localStorage.getItem('xhs-theme') || 'dark');
+
+// =========================================================================
+// Runs list
+// =========================================================================
+async function fetchRuns() {
+  try {
+    const data = await api('/api/runs');
+    stateOrder = data.state_order || [];
+    stateLabels = data.state_labels || {};
+    renderRuns(data.runs || []);
+  } catch (e) { toast('加载 runs 失败: ' + e.message, 'error'); }
+}
+
+function renderRuns(runs) {
+  const el = $('runsList');
+  if (!runs.length) {
+    el.innerHTML = '<div class="text-xs px-2 py-8 text-center" style="color: var(--text-faint);">暂无 run<br>点击 + Daily 创建</div>';
+    return;
+  }
+  el.innerHTML = runs.map(r => {
+    const st = r.state || 'UNKNOWN';
+    const active = r.run_id === current.runId ? 'active' : '';
+    const badge = stateBadge(st, r.web_status);
+    const running = r.web_status === 'running' ? '<span class="spinner"></span>' : '';
+    return `
+      <div class="run-item ${active}" data-run-id="${esc(r.run_id)}">
+        <div class="run-title">${esc(r.title || r.run_id)}</div>
+        <div class="run-meta">
+          ${badge} ${running}
+          <span class="mono" style="opacity:0.7;">${esc(r.run_id.slice(0,13))}</span>
+        </div>
+      </div>`;
+  }).join('');
+  el.querySelectorAll('.run-item').forEach(n => {
+    n.addEventListener('click', () => selectRun(n.dataset.runId));
+  });
+}
+
+function stateBadge(st, webStatus) {
+  if (webStatus === 'running') return '<span class="badge badge-brand">运行中</span>';
+  if (st === 'COMPLETED') return '<span class="badge badge-success">完成</span>';
+  if (st === 'FAILED') return '<span class="badge badge-error">失败</span>';
+  if (st === 'HUMAN_REVIEW') return '<span class="badge badge-warn">人工</span>';
+  return `<span class="badge badge-dim">${esc(fmtState(st))}</span>`;
+}
+
+// =========================================================================
+// Select run + polling
+// =========================================================================
+function selectRun(runId) {
+  if (current.runId === runId) return;
+  stopPoll();
+  current.runId = runId;
+  $('emptyState').classList.add('hidden');
+  $('runDetail').classList.remove('hidden');
+  renderRunDetail(null);
+  fetchState(true);
+  startPoll();
+  // refresh runs highlight
+  document.querySelectorAll('.run-item').forEach(n => n.classList.toggle('active', n.dataset.runId === runId));
+  loadRightPane();
+}
+
+function startPoll() {
+  stopPoll();
+  current.pollTimer = setInterval(() => fetchState(false), POLL_INTERVAL);
+}
+function stopPoll() {
+  if (current.pollTimer) { clearInterval(current.pollTimer); current.pollTimer = null; }
+}
+
+async function fetchState(rerenderAll) {
+  if (!current.runId) return;
+  try {
+    const st = await api(`/api/runs/${current.runId}/state`);
+    const prev = current.runState;
+    current.runState = st;
+    renderRunDetail(st);
+    // stage transitions: refresh right pane when entering FINAL_CONFIRMATION / COMPLETED
+    if (rerenderAll || (prev && prev.state !== st.state)) loadRightPane();
+    // stop polling if terminal
+    if (st.state === 'COMPLETED' || st.state === 'FAILED' || st.state === 'HUMAN_REVIEW') {
+      if (st.web_status !== 'running') stopPoll();
+    }
+  } catch (e) {
+    $('runDetail').innerHTML = `<div class="card" style="border-color: var(--error); color: var(--error);">加载状态失败: ${esc(e.message)}</div>`;
+  }
+}
+
+// =========================================================================
+// Progress bar
+// =========================================================================
+function renderProgress(curState) {
+  let idx = stateOrder.indexOf(curState);
+  // state not in progress list (INIT/HUMAN_REVIEW/FAILED)
+  const states = stateOrder;
+  return `<div class="progress-wrap">${states.map((s, i) => {
+    let cls = '';
+    if (curState === 'COMPLETED') {
+      // 全部完成：所有步骤绿色 ✓
+      cls = 'done';
+    } else if (s === curState) {
+      cls = (curState === 'FAILED') ? 'failed' : 'current';
+    } else if (idx >= 0 && i < idx) {
+      cls = 'done';
+    }
+    const icon = cls === 'done' ? '✓' : (cls === 'failed' ? '!' : (i + 1));
+    return `<div class="progress-step ${cls}">
+      <div class="progress-line"></div>
+      <div class="progress-dot">${icon}</div>
+      <div class="progress-label">${esc(fmtState(s))}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// =========================================================================
+// Middle: run detail
+// =========================================================================
+function renderRunDetail(st) {
+  const el = $('runDetail');
+  if (!st) {
+    el.innerHTML = '<div class="card"><div class="spinner"></div> 加载中…</div>';
+    return;
+  }
+  const cur = st.state || 'UNKNOWN';
+  const running = st.web_status === 'running';
+  const err = st.web_error;
+  let html = `
+    <div class="card">
+      <div class="flex items-center justify-between mb-1">
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-bold">Run</h2>
+          <span class="badge ${running ? 'badge-brand' : stateBadgeClass(cur)}">${running ? '运行中' : fmtState(cur)}</span>
+          ${running ? '<span class="spinner"></span>' : ''}
+        </div>
+        <span class="text-xs mono" style="color: var(--text-faint);">${esc(st.run_id || current.runId)}</span>
+      </div>
+      ${renderProgress(cur)}
+    </div>
+  `;
+
+  if (err) {
+    html += `<div class="card" style="border-color: var(--error);">
+      <div class="font-semibold" style="color: var(--error);">⚠ 任务出错</div>
+      <div class="text-xs mt-1 mono" style="color: var(--text-dim);">${esc(err)}</div>
+    </div>`;
+  }
+
+  // status meta
+  html += `<div class="flex flex-wrap gap-2 text-xs" style="color: var(--text-dim);">
+    <span class="badge badge-dim">研究 ${st.research_count || 0}</span>
+    <span class="badge badge-dim">大纲修改 ${st.outline_revise_count || 0}</span>
+    <span class="badge badge-dim">文案修改 ${st.copy_revise_count || 0}</span>
+    <span class="badge badge-dim">布局修改 ${st.layout_revise_count || 0}</span>
+    <span class="badge badge-dim">渲染重试 ${st.render_retry_count || 0}</span>
+  </div>`;
+
+  // stage-specific
+  html += renderStageActions(cur, running);
+
+  el.innerHTML = html;
+  bindStageActions(cur, running);
+}
+
+function stateBadgeClass(cur) {
+  if (cur === 'COMPLETED') return 'badge-success';
+  if (cur === 'FAILED') return 'badge-error';
+  if (cur === 'HUMAN_REVIEW') return 'badge-warn';
+  return 'badge-brand';
+}
+
+function renderStageActions(cur, running) {
+  if (running) return '<div class="card"><div class="spinner"></div> <span style="color: var(--text-dim);">正在执行后台任务，请稍候（每 2 秒自动刷新）…</span></div>';
+  switch (cur) {
+    case 'DISCOVERING':
+    case 'TOPIC_ANGLE_CONFIRMATION':
+      return `<div id="stageCard" class="card"><div class="spinner"></div> 加载候选话题…</div>`;
+    case 'OUTLINE_CONFIRMATION':
+      return `<div id="stageCard" class="card"><div class="spinner"></div> 加载大纲…</div>`;
+    case 'FINAL_CONFIRMATION':
+      return `<div id="stageCard" class="card"><div class="spinner"></div> 加载终稿…</div>`;
+    case 'COMPLETED':
+      return `<div class="card" style="border-color: var(--success);">
+        <div class="flex items-center gap-2 font-semibold" style="color: var(--success);"><span class="pulse-dot"></span> 流程已完成</div>
+        <div class="text-xs mt-2" style="color: var(--text-dim);">右侧预览查看最终 note.html，可重新生成文案。</div>
+        <div class="mt-3"><button id="reviseFinalBtn" class="btn btn-secondary">重新生成文案</button></div>
+      </div>`;
+    case 'FAILED':
+      return `<div class="card" style="border-color: var(--error);"><div class="font-semibold" style="color: var(--error);">流程已失败</div><div class="text-xs mt-1" style="color: var(--text-dim);">请查看日志与错误信息，或重新发起 Daily。</div></div>`;
+    case 'HUMAN_REVIEW':
+      return `<div class="card" style="border-color: var(--warn);"><div class="font-semibold" style="color: var(--warn);">需人工介入</div><div class="text-xs mt-1" style="color: var(--text-dim);">审核阻断，请检查日志。</div></div>`;
+    default:
+      // intermediate running stage (RESEARCHING / DRAFTING / etc.) — shouldn't reach here when not running, but show info
+      return `<div class="card"><div style="color: var(--text-dim);">当前阶段：<b>${esc(fmtState(cur))}</b></div></div>`;
+  }
+}
+
+function bindStageActions(cur, running) {
+  if (cur === 'TOPIC_ANGLE_CONFIRMATION' && !running) loadCandidates();
+  if (cur === 'OUTLINE_CONFIRMATION' && !running) loadOutline();
+  if (cur === 'FINAL_CONFIRMATION' && !running) loadFinalConfirm();
+  const rb = $('reviseFinalBtn');
+  if (rb) rb.addEventListener('click', () => openRevise('final'));
+}
+
+// =========================================================================
+// Stage loaders
+// =========================================================================
+async function loadCandidates() {
+  const el = $('stageCard');
+  if (!el) return;
+  try {
+    const data = await api(`/api/runs/${current.runId}/candidates`);
+    const cands = data.candidates || [];
+    el.innerHTML = `
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold">候选话题</h3>
+        <span class="badge badge-pink">${cands.length} 个</span>
+      </div>
+      <div class="flex flex-col gap-2">
+        ${cands.map(c => `
+          <div class="card card-hover flex flex-col gap-2" style="padding:12px;">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-brand mono">${esc(c.topic_id)}</span>
+                  <span class="badge badge-pink">${esc(c.content_type_label || c.content_type || '')}</span>
+                  <span class="badge badge-dim">${esc(c.lifecycle || '')}</span>
+                </div>
+                <div class="font-medium text-[14px] leading-snug">${esc(c.title)}</div>
+                <div class="text-xs mt-1" style="color: var(--text-dim);">${esc(c.what_happened || '')}</div>
+                <div class="flex flex-wrap gap-3 mt-2 text-[11px]" style="color: var(--text-faint);">
+                  <span>分享值 <b style="color: var(--success);">${(c.shareability||0).toFixed(2)}</b></span>
+                  <span>证据质量 <b style="color: var(--warn);">${(c.evidence_quality||0).toFixed(2)}</b></span>
+                  <span>受众: ${esc(c.target_audience || '')}</span>
+                </div>
+              </div>
+              <button class="btn btn-primary" data-topic="${esc(c.topic_id)}">选择</button>
+            </div>
+            <div class="text-[11px]" style="color: var(--text-faint);">${esc(c.product_angle || '')}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    el.querySelectorAll('button[data-topic]').forEach(b => {
+      b.addEventListener('click', () => selectTopic(b.dataset.topic));
+    });
+  } catch (e) {
+    el.innerHTML = `<div style="color: var(--error);">加载候选失败: ${esc(e.message)}</div>`;
+  }
+}
+
+async function loadOutline() {
+  const el = $('stageCard');
+  if (!el) return;
+  try {
+    const data = await api(`/api/runs/${current.runId}/outline`);
+    const thesis = data.editorial_thesis || {};
+    const cards = data.cards || [];
+    el.innerHTML = `
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold">卡片大纲</h3>
+        <div class="flex gap-2">
+          <button id="reviseOutlineBtn" class="btn btn-secondary">重新生成</button>
+          <button id="confirmOutlineBtn" class="btn btn-primary">确认大纲</button>
+        </div>
+      </div>
+      <div class="card" style="padding:12px; border-color: var(--brand); background: rgba(94,106,210,0.06);">
+        <div class="text-xs mb-1" style="color: var(--brand);">Editorial Thesis</div>
+        <div class="text-[13px] leading-snug">${esc(thesis.statement || '')}</div>
+        <div class="flex gap-3 mt-2 text-[11px]" style="color: var(--text-faint);">
+          <span>置信度: <b>${esc(thesis.certainty || '')}</b></span>
+          <span>支撑claim: ${esc((thesis.supporting_claim_refs||[]).join(', ') || '无')}</span>
+        </div>
+      </div>
+      <div class="mt-3">
+        <div class="text-xs mb-1" style="color: var(--text-dim);">共 ${cards.length} 张卡片</div>
+        ${cards.map(c => `
+          <div class="table-row" style="grid-template-columns: 70px 90px 1fr 100px;">
+            <span class="mono" style="color: var(--brand);">${esc(c.card_id)}</span>
+            <span style="color: var(--text-dim);">${esc(c.purpose || '')}</span>
+            <span>${esc(c.key_message || '')}</span>
+            <span class="badge badge-dim">${esc(c.visual_type || '')}</span>
+          </div>
+        `).join('')}
+      </div>`;
+    $('confirmOutlineBtn').addEventListener('click', confirmOutline);
+    $('reviseOutlineBtn').addEventListener('click', () => openRevise('outline'));
+  } catch (e) {
+    el.innerHTML = `<div style="color: var(--error);">加载大纲失败: ${esc(e.message)}</div>`;
+  }
+}
+
+async function loadFinalConfirm() {
+  const el = $('stageCard');
+  if (!el) return;
+  let draftInfo = '';
+  try {
+    const d = await api(`/api/runs/${current.runId}/draft`);
+    const titles = (d.post_title_candidates || []).map((t, i) => `${i+1}. ${t.text}`).join('<br>');
+    draftInfo = `
+      <div class="text-xs mb-1" style="color: var(--text-dim);">标题候选</div>
+      <div class="text-[12px] mb-2">${esc(titles) || '无'}</div>
+      <div class="text-xs mb-1" style="color: var(--text-dim);">正文摘要</div>
+      <div class="text-[12px]" style="color: var(--text-dim);">${esc((d.body_text||'').slice(0,160))}…</div>`;
+  } catch {}
+  el.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-semibold">终稿确认</h3>
+      <div class="flex gap-2">
+        <button id="reviseFinalBtn2" class="btn btn-secondary">重新生成文案</button>
+        <button id="confirmFinalBtn" class="btn btn-primary">确认终稿</button>
+      </div>
+    </div>
+    <div class="card" style="padding:12px;">${draftInfo || '<div style="color: var(--text-dim);">右侧预览查看最终 HTML 产物。</div>'}</div>
+    <div class="text-xs mt-2" style="color: var(--text-faint);">确认后将标记为 COMPLETED。</div>`;
+  $('confirmFinalBtn').addEventListener('click', confirmFinal);
+  $('reviseFinalBtn2').addEventListener('click', () => openRevise('final'));
+  loadRightPane();
+}
+
+// =========================================================================
+// Actions
+// =========================================================================
+async function startDaily() {
+  try {
+    $('dailyBtn').disabled = true;
+    const data = await api('/api/daily', { method: 'POST' });
+    toast('已启动每日热点发现: ' + data.run_id, 'success');
+    await fetchRuns();
+    selectRun(data.run_id);
+  } catch (e) {
+    toast('启动失败: ' + e.message, 'error');
+  } finally {
+    $('dailyBtn').disabled = false;
+  }
+}
+
+async function selectTopic(topicId) {
+  try {
+    document.querySelectorAll('button[data-topic]').forEach(b => b.disabled = true);
+    const data = await api(`/api/runs/${current.runId}/select`, {
+      method: 'POST', body: JSON.stringify({ topic_id: topicId })
+    });
+    toast('已选择: ' + (data.selected_topic || topicId), 'success');
+    fetchState(true);
+    startPoll();
+    fetchRuns();
+  } catch (e) {
+    toast('选择失败: ' + e.message, 'error');
+    document.querySelectorAll('button[data-topic]').forEach(b => b.disabled = false);
+  }
+}
+
+async function confirmOutline() {
+  try {
+    $('confirmOutlineBtn').disabled = true;
+    await api(`/api/runs/${current.runId}/confirm`, { method: 'POST' });
+    toast('已确认大纲，开始撰写文案…', 'success');
+    fetchState(true);
+    startPoll();
+  } catch (e) {
+    toast('确认失败: ' + e.message, 'error');
+    $('confirmOutlineBtn').disabled = false;
+  }
+}
+
+async function confirmFinal() {
+  try {
+    $('confirmFinalBtn').disabled = true;
+    await api(`/api/runs/${current.runId}/confirm`, { method: 'POST' });
+    toast('终稿已确认，流程完成！', 'success');
+    fetchState(true);
+    fetchRuns();
+  } catch (e) {
+    toast('确认失败: ' + e.message, 'error');
+    $('confirmFinalBtn').disabled = false;
+  }
+}
+
+// revise modal
+function openRevise(kind) {
+  $('reviseModal').classList.remove('hidden');
+  $('reviseModal').dataset.kind = kind;
+  $('reviseTitle').textContent = kind === 'outline' ? '重新生成大纲' : '重新生成文案 + 渲染';
+  $('reviseHint').textContent = kind === 'outline' ? '输入对大纲的修改指令' : '输入对文案的修改指令';
+  $('reviseInput').value = '';
+  setTimeout(() => $('reviseInput').focus(), 50);
+}
+function closeRevise() { $('reviseModal').classList.add('hidden'); }
+$('reviseCancel').addEventListener('click', closeRevise);
+$('reviseModal').addEventListener('click', (e) => { if (e.target.id === 'reviseModal') closeRevise(); });
+$('reviseSubmit').addEventListener('click', async () => {
+  const instr = $('reviseInput').value.trim();
+  if (!instr) { toast('请输入修改指令', 'error'); return; }
+  const kind = $('reviseModal').dataset.kind;
+  closeRevise();
+  try {
+    await api(`/api/runs/${current.runId}/revise`, {
+      method: 'POST', body: JSON.stringify({ instruction: instr })
+    });
+    toast('已提交重新生成指令，后台执行中…', 'success');
+    fetchState(true);
+    startPoll();
+  } catch (e) {
+    toast('提交失败: ' + e.message, 'error');
+  }
+});
+
+// =========================================================================
+// Right pane: preview / log
+// =========================================================================
+function setRightTab(tab) {
+  current.rightTab = tab;
+  $('tabPreview').className = tab === 'preview' ? 'btn btn-secondary text-xs' : 'btn btn-ghost text-xs';
+  $('tabLog').className = tab === 'log' ? 'btn btn-secondary text-xs' : 'btn btn-ghost text-xs';
+  $('previewPane').classList.toggle('hidden', tab !== 'preview');
+  $('previewPane').classList.toggle('flex', tab === 'preview');
+  $('logPane').classList.toggle('hidden', tab !== 'log');
+  $('logPane').classList.toggle('flex', tab === 'log');
+  loadRightPane();
+}
+$('tabPreview').addEventListener('click', () => setRightTab('preview'));
+$('tabLog').addEventListener('click', () => setRightTab('log'));
+$('refreshPreview').addEventListener('click', loadRightPane);
+
+function loadRightPane() {
+  if (!current.runId) return;
+  if (current.rightTab === 'preview') loadPreview();
+  else loadLog();
+}
+
+function loadPreview() {
+  const pane = $('previewPane');
+  pane.innerHTML = `<div class="flex-1 p-3 overflow-auto" style="background: var(--bg);"><div class="text-xs h-full flex items-center justify-center" style="color: var(--text-faint);"><div class="spinner"></div> 加载预览…</div></div>`;
+  // iframe via srcdoc fallback; use src directly
+  const wrap = document.createElement('div');
+  wrap.className = 'flex-1 p-3 overflow-hidden flex flex-col';
+  wrap.style.background = 'var(--bg)';
+  const iframe = document.createElement('iframe');
+  iframe.src = `/api/runs/${current.runId}/html`;
+  iframe.style.cssText = 'flex:1; width:100%; border:1px solid var(--border); border-radius:8px; background:#fff; min-height:0;';
+  iframe.onload = () => {};
+  iframe.onerror = () => {
+    pane.innerHTML = `<div class="text-xs p-4" style="color: var(--text-faint);">暂无 note.html（终稿尚未生成）</div>`;
+  };
+  // detect 404: fetch HEAD
+  fetch(`/api/runs/${current.runId}/html`, { method: 'GET' }).then(r => {
+    if (!r.ok) {
+      pane.innerHTML = `<div class="text-xs p-4" style="color: var(--text-faint);">暂无 note.html<br><span style="color: var(--text-dim);">终稿生成后此处展示预览</span></div>`;
+    } else {
+      wrap.innerHTML = '';
+      wrap.appendChild(iframe);
+      pane.innerHTML = '';
+      pane.appendChild(wrap);
+    }
+  }).catch(() => {
+    pane.innerHTML = `<div class="text-xs p-4" style="color: var(--error);">预览加载失败</div>`;
+  });
+}
+
+async function loadLog() {
+  const pane = $('logList');
+  pane.innerHTML = '<div class="text-xs" style="color: var(--text-faint);">加载日志…</div>';
+  try {
+    const data = await api(`/api/runs/${current.runId}/log`);
+    const entries = data.entries || [];
+    if (!entries.length) { pane.innerHTML = '<div class="text-xs" style="color: var(--text-faint);">暂无日志</div>'; return; }
+    pane.innerHTML = entries.map(e => {
+      const stage = e.stage || '';
+      const agent = e.agent || '';
+      const decision = e.decision || '';
+      const dur = e.duration_ms != null ? `${e.duration_ms}ms` : '';
+      const model = e.model || '';
+      const reasons = (e.decision_reasons || []).slice(0, 3).map(r => esc(r)).join(' · ');
+      const warn = (e.warnings && e.warnings.length) ? `<span class="badge badge-warn">${e.warnings.length} warn</span>` : '';
+      return `<div class="card" style="padding:10px;">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <div class="flex items-center gap-2">
+            <span class="badge badge-brand">${esc(stage)}</span>
+            <span class="badge badge-dim">${esc(agent)}</span>
+            ${warn}
+          </div>
+          <span class="text-[10px] mono" style="color: var(--text-faint);">${esc(e.timestamp || '')} ${dur ? '· '+dur : ''} ${model ? '· '+esc(model) : ''}</span>
+        </div>
+        <div class="text-[12px]">${esc(decision)}</div>
+        ${reasons ? `<div class="text-[11px] mt-1" style="color: var(--text-dim);">${reasons}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch (e) {
+    pane.innerHTML = `<div class="text-xs" style="color: var(--error);">日志加载失败: ${esc(e.message)}</div>`;
+  }
+}
+
+// =========================================================================
+// Wire up
+// =========================================================================
+$('dailyBtn').addEventListener('click', startDaily);
+$('refreshRuns').addEventListener('click', fetchRuns);
+
+fetchRuns();
+</script>
+</body>
+</html>
